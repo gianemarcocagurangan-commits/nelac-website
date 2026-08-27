@@ -1,0 +1,207 @@
+---
+import PageLayout from "~/layouts/PageLayout.astro";
+import Notice from "~/components/Notice.astro";
+import Icon from "~/components/Icon.astro";
+import CallToAction from "~/components/CallToAction.astro";
+
+import { services, type Service } from "~/content/services";
+import { contact } from "~/content/site";
+
+export const getStaticPaths = () =>
+  services.map((service) => ({
+    params: { slug: service.slug },
+    props: { service },
+  }));
+
+const { service }: { service: Service } = Astro.props;
+
+const others = services.filter((item) => item.slug !== service.slug);
+---
+
+<PageLayout
+  title={service.name}
+  heading={service.name}
+  eyebrow="Student Services"
+  description={`${service.name} at Northeast Luzon Adventist College — ${service.summary}`}
+  lead={service.summary}
+  trail={[
+    { label: "Student Life & Services", href: "/services" },
+    { label: service.name },
+  ]}
+>
+  <section class="section">
+    <div class="container service-page">
+      <article class="service-page__main">
+        {
+          service.status === "published" ? (
+            <div class="prose">
+              {service.body.map((paragraph) => (
+                <p set:html={paragraph} />
+              ))}
+            </div>
+          ) : (
+            <div class="service-page__pending">
+              <Notice tone="pending" title="Information being prepared">
+                <p>
+                  The school has not yet published details about
+                  {` ${service.name}`}. This page is ready and will be filled in
+                  as soon as the information is supplied.
+                </p>
+                {service.legacyNote && (
+                  <p>
+                    The previous website carried only this note here:
+                    <em> &ldquo;{service.legacyNote}&rdquo;</em>
+                  </p>
+                )}
+              </Notice>
+
+              <div class="service-page__ask">
+                <h2 class="service-page__ask-title">
+                  Need an answer now?
+                </h2>
+                <p class="service-page__ask-text">
+                  The school can answer questions about {service.name} directly.
+                </p>
+                <ul class="service-page__contacts">
+                  <li>
+                    <Icon name="mail" size={19} />
+                    <a href={`mailto:${contact.email}`}>{contact.email}</a>
+                  </li>
+                  <li>
+                    <Icon name="phone" size={19} />
+                    <a href={`tel:${contact.phoneHref}`}>{contact.phone}</a>
+                  </li>
+                </ul>
+                <p>
+                  <a class="link-arrow" href="/contact">
+                    Send a message
+                    <Icon name="arrow-right" size={18} />
+                  </a>
+                </p>
+              </div>
+            </div>
+          )
+        }
+      </article>
+
+      <aside class="service-page__aside" aria-labelledby="other-services">
+        <h2 class="service-page__aside-title" id="other-services">
+          Other services
+        </h2>
+        <ul class="service-page__list">
+          {
+            others.map((item) => (
+              <li>
+                <a href={`/services/${item.slug}`}>
+                  {item.name}
+                  <Icon name="chevron-right" size={16} />
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </aside>
+    </div>
+  </section>
+
+  <CallToAction />
+</PageLayout>
+
+<style>
+  .service-page {
+    display: grid;
+    gap: var(--space-8);
+    align-items: start;
+  }
+
+  @media (min-width: 60rem) {
+    .service-page {
+      grid-template-columns: minmax(0, 1fr) 17rem;
+      gap: var(--space-9);
+    }
+  }
+
+  .service-page__pending {
+    display: grid;
+    gap: var(--space-6);
+  }
+
+  .service-page__ask {
+    padding: var(--space-6);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background-color: var(--color-surface);
+  }
+
+  .service-page__ask-title {
+    font-size: var(--step-2);
+  }
+
+  .service-page__ask-text {
+    margin-block-start: var(--space-2);
+    color: var(--color-text-muted);
+  }
+
+  .service-page__contacts {
+    display: grid;
+    gap: var(--space-3);
+    margin: var(--space-5) 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .service-page__contacts li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .service-page__contacts :global(svg) {
+    color: var(--color-accent);
+  }
+
+  .service-page__aside {
+    padding: var(--space-5);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background-color: var(--color-surface-alt);
+  }
+
+  .service-page__aside-title {
+    font-family: var(--font-sans);
+    font-size: var(--step--1);
+    font-weight: 650;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-text-subtle);
+  }
+
+  .service-page__list {
+    margin: var(--space-4) 0 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .service-page__list a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding-block: 0.7rem;
+    border-block-end: 1px solid var(--color-border);
+    font-size: var(--step--1);
+    font-weight: 550;
+    color: var(--color-text-muted);
+    text-decoration: none;
+  }
+
+  .service-page__list li:last-child a {
+    border-block-end: none;
+  }
+
+  .service-page__list a:hover {
+    color: var(--color-primary);
+  }
+</style>

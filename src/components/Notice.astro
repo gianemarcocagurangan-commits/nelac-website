@@ -1,0 +1,36 @@
+---
+import Icon, { type IconName } from "./Icon.astro";
+
+/**
+ * Inline status message. Used for "content being prepared" states, form
+ * errors and success confirmations so the site never fakes information.
+ */
+interface Props {
+  tone?: "info" | "pending" | "error" | "success";
+  title?: string;
+  class?: string;
+  role?: "alert" | "status" | "note" | "region";
+  id?: string;
+}
+
+const { tone = "info", title, class: className, role, id } = Astro.props;
+
+const icons: Record<string, IconName> = {
+  info: "info",
+  pending: "clock",
+  error: "alert-triangle",
+  success: "check",
+};
+---
+
+<div
+  class:list={["notice", `notice--${tone}`, className]}
+  role={role}
+  id={id}
+>
+  <Icon name={icons[tone]!} size={20} class="notice__icon" />
+  <div class="notice__body">
+    {title && <p class="notice__title">{title}</p>}
+    <div class="notice__text"><slot /></div>
+  </div>
+</div>

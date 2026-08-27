@@ -1,0 +1,135 @@
+---
+import { Image } from "astro:assets";
+import type { Department } from "~/content/academics";
+
+interface Props {
+  department: Department;
+  index?: number;
+}
+
+const { department, index = 0 } = Astro.props;
+---
+
+<li
+  class="dept"
+  id={department.slug}
+  data-reveal
+  style={`--reveal-delay:${index * 60}ms`}
+>
+  <div class="dept__media">
+    <Image
+      src={department.photo}
+      alt={`Students and facilities of the ${department.name} department at Northeast Luzon Adventist College`}
+      widths={[400, 700, 1100]}
+      sizes="(min-width: 62rem) 32vw, (min-width: 40rem) 46vw, 92vw"
+      loading="lazy"
+      class="dept__photo"
+    />
+  </div>
+
+  <div class="dept__body">
+    <h3 class="dept__name">{department.name}</h3>
+    {department.note && <p class="dept__blurb">{department.note}</p>}
+    <dl class="dept__meta">
+      <dt>Approximate fee</dt>
+      <dd>{department.indicativeFee}</dd>
+    </dl>
+    <p class="dept__note">
+      Amount published by the school and shown for guidance only.
+      <a href="/finance">See financial information</a>.
+    </p>
+  </div>
+</li>
+
+<style>
+  .dept {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    scroll-margin-top: calc(var(--header-height) + 4rem);
+    transition:
+      border-color var(--duration) var(--ease-out),
+      box-shadow var(--duration) var(--ease-out),
+      transform var(--duration) var(--ease-out);
+  }
+
+  .dept:hover {
+    border-color: var(--nelac-green-200);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-3px);
+  }
+
+  .dept__media {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    background-color: var(--color-surface-alt);
+    overflow: hidden;
+  }
+
+  :global(.dept__photo) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--duration-slow) var(--ease-out);
+  }
+
+  .dept:hover :global(.dept__photo) {
+    transform: scale(1.04);
+  }
+
+  .dept__body {
+    padding: var(--space-5);
+  }
+
+  .dept__blurb {
+    margin-block-start: var(--space-2);
+    font-size: var(--step--1);
+    line-height: 1.6;
+    color: var(--color-text-muted);
+  }
+
+  .dept__name {
+    font-size: var(--step-2);
+  }
+
+  .dept__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-2);
+    margin-block-start: var(--space-3);
+  }
+
+  .dept__meta dt {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--color-text-subtle);
+  }
+
+  .dept__meta dd {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    font-weight: 600;
+    color: var(--color-primary);
+  }
+
+  .dept__note {
+    margin-block-start: var(--space-3);
+    font-size: var(--step--1);
+    line-height: 1.6;
+    color: var(--color-text-subtle);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dept:hover,
+    .dept:hover :global(.dept__photo) {
+      transform: none;
+    }
+  }
+</style>

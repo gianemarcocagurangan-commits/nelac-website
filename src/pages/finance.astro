@@ -1,0 +1,266 @@
+---
+import PageLayout from "~/layouts/PageLayout.astro";
+import SectionHeading from "~/components/SectionHeading.astro";
+import Notice from "~/components/Notice.astro";
+import Icon from "~/components/Icon.astro";
+import CallToAction from "~/components/CallToAction.astro";
+
+import { fees, financeHeading, financeNotice } from "~/content/finance";
+import { contact } from "~/content/site";
+---
+
+<PageLayout
+  title="Financial Information"
+  heading="Financial information"
+  eyebrow={financeHeading.eyebrow}
+  description="Approximate school fees by department at Northeast Luzon Adventist College, as published by the school, with contact details for the Finance Office."
+  lead="The approximate amounts published by the school for each department. For a detailed breakdown, please speak with the Finance Office."
+  trail={[{ label: "Finance" }]}
+>
+  <section class="section" aria-labelledby="fees-title">
+    <div class="container">
+      <SectionHeading
+        eyebrow="By department"
+        title={financeHeading.title}
+        id="fees-title"
+      />
+
+      <!-- Card list on small screens, table on larger ones. -->
+      <ul class="fees-cards" aria-hidden="false">
+        {
+          fees.map((fee, index) => (
+            <li class="fees-card" data-reveal style={`--reveal-delay:${index * 60}ms`}>
+              <h3 class="fees-card__name">{fee.department}</h3>
+              <p class="fees-card__label">{fee.amountLabel}</p>
+              <p class="fees-card__amount">{fee.amount}</p>
+              <a class="fees-card__link" href="#finance-office">
+                Ask the Finance Office
+                <Icon name="arrow-right" size={16} />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="fees-table-wrap">
+        <table class="fees-table">
+          <caption class="visually-hidden">
+            Approximate school fees by department at Northeast Luzon Adventist
+            College
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Department</th>
+              <th scope="col">Basis</th>
+              <th scope="col">Approximate amount</th>
+              <th scope="col"><span class="visually-hidden">Details</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              fees.map((fee) => (
+                <tr>
+                  <th scope="row">{fee.department}</th>
+                  <td>{fee.amountLabel}</td>
+                  <td class="fees-table__amount">{fee.amount}</td>
+                  <td class="fees-table__action">
+                    <a href="#finance-office">
+                      See details
+                      <Icon name="arrow-right" size={15} />
+                    </a>
+                  </td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <Notice tone="pending" title="Please confirm before you pay" class="fees-notice">
+        {financeNotice}
+      </Notice>
+    </div>
+  </section>
+
+  <section
+    class="section section--paper"
+    id="finance-office"
+    aria-labelledby="office-title"
+  >
+    <div class="container container--narrow">
+      <SectionHeading
+        eyebrow="Finance Office"
+        title="Talk to us about fees"
+        id="office-title"
+        lead="A full breakdown of fees, payment schedules and any assistance available is handled by the Finance Office."
+      />
+      <ul class="office-contacts">
+        <li>
+          <Icon name="mail" size={20} />
+          <a href={`mailto:${contact.email}`}>{contact.email}</a>
+        </li>
+        <li>
+          <Icon name="phone" size={20} />
+          <a href={`tel:${contact.phoneHref}`}>{contact.phone}</a>
+        </li>
+        <li>
+          <Icon name="map-pin" size={20} />
+          <span>{contact.addressOneLine}</span>
+        </li>
+      </ul>
+      <p class="office-more">
+        <a class="link-arrow" href="/contact">
+          Send a message to the school
+          <Icon name="arrow-right" size={18} />
+        </a>
+      </p>
+    </div>
+  </section>
+
+  <CallToAction />
+</PageLayout>
+
+<style>
+  /* ---------- Mobile cards ---------- */
+  .fees-cards {
+    display: grid;
+    gap: var(--space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .fees-card {
+    padding: var(--space-5);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background-color: var(--color-surface);
+  }
+
+  .fees-card__name {
+    font-size: var(--step-1);
+  }
+
+  .fees-card__label {
+    margin-block-start: var(--space-3);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--color-text-subtle);
+  }
+
+  .fees-card__amount {
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    font-weight: 600;
+    color: var(--color-primary);
+  }
+
+  .fees-card__link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-block-start: var(--space-4);
+    font-size: var(--step--1);
+    font-weight: 650;
+    text-decoration: none;
+  }
+
+  /* ---------- Table ---------- */
+  .fees-table-wrap {
+    display: none;
+    overflow-x: auto;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background-color: var(--color-surface);
+  }
+
+  @media (min-width: 48rem) {
+    .fees-cards {
+      display: none;
+    }
+    .fees-table-wrap {
+      display: block;
+    }
+  }
+
+  .fees-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--step-0);
+  }
+
+  .fees-table th,
+  .fees-table td {
+    padding: var(--space-4) var(--space-5);
+    text-align: start;
+    vertical-align: middle;
+  }
+
+  .fees-table thead th {
+    font-family: var(--font-sans);
+    font-size: 0.78rem;
+    font-weight: 650;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--color-text-subtle);
+    background-color: var(--color-surface-alt);
+    border-block-end: 1px solid var(--color-border);
+  }
+
+  .fees-table tbody tr + tr {
+    border-block-start: 1px solid var(--color-border);
+  }
+
+  .fees-table tbody th {
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    font-weight: 600;
+  }
+
+  .fees-table__amount {
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    font-weight: 600;
+    color: var(--color-primary);
+    white-space: nowrap;
+  }
+
+  .fees-table__action a {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--step--1);
+    font-weight: 650;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  :global(.fees-notice) {
+    margin-block-start: var(--space-6);
+  }
+
+  /* ---------- Office ---------- */
+  .office-contacts {
+    display: grid;
+    gap: var(--space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .office-contacts li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .office-contacts :global(svg) {
+    color: var(--color-accent);
+  }
+
+  .office-more {
+    margin-block-start: var(--space-6);
+  }
+</style>

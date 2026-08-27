@@ -1,0 +1,481 @@
+---
+import { Image } from "astro:assets";
+import Icon from "./Icon.astro";
+
+import seniorHigh from "~/assets/images/departments/senior-high.jpg";
+import collegeBuilding from "~/assets/images/departments/arts-and-education.jpg";
+import auditorium from "~/assets/images/departments/technical-vocational.jpg";
+
+/**
+ * Homepage hero.
+ *
+ * The three messages are the ones the school published on its own carousel:
+ * "Come & Experience Faith-based Education", "Service & Character Building"
+ * and "Knowledge & Excellence".
+ *
+ * The photographs are NELAC's own campus photographs. The images the previous
+ * site used behind these captions were announcement posters carrying their own
+ * printed text; overlaying more text on them made both unreadable, so those
+ * posters are now shown at full size where their text can actually be read —
+ * on the News and Research pages.
+ */
+const slides = [
+  {
+    image: seniorHigh,
+    alt: "Aerial view of the two-storey Senior High School Department buildings at Northeast Luzon Adventist College, with red roofs around a central courtyard",
+    kicker: "Come & Experience",
+    title: "Faith-Based Education",
+    body: "A boarding Seventh-day Adventist institution on 21 hectares along the Maharlika Highway, serving the Cagayan valley since 1948.",
+    cta: { label: "About NELAC", href: "/about" },
+    secondary: { label: "Our departments", href: "/academics#departments" },
+  },
+  {
+    image: collegeBuilding,
+    alt: "The college building at Northeast Luzon Adventist College, seen from the tree-lined walkway",
+    kicker: "Service &",
+    title: "Character Building",
+    body: "Part of a chain of more than 7,500 Seventh-day Adventist schools commissioned to train, to win, and to hold the young people of the Church.",
+    cta: { label: "Student life & services", href: "/services" },
+    secondary: { label: "Read our history", href: "/history" },
+  },
+  {
+    image: auditorium,
+    alt: "The arched main building on the Northeast Luzon Adventist College campus in Mabini, Alicia, Isabela",
+    kicker: "Knowledge &",
+    title: "Excellence",
+    body: "In 2014 the first class of education majors graduated — one hundred percent of them passed the Licensure Examination for Teachers.",
+    cta: { label: "Academics", href: "/academics" },
+    secondary: { label: "Research & publication", href: "/research" },
+  },
+];
+---
+
+<section
+  class="hero"
+  aria-roledescription="carousel"
+  aria-label="Northeast Luzon Adventist College highlights"
+  data-hero
+>
+  <div class="hero__viewport">
+    {
+      slides.map((slide, index) => (
+        <article
+          class:list={["hero__slide", index === 0 && "is-active"]}
+          data-hero-slide
+          id={`hero-slide-${index + 1}`}
+          role="group"
+          aria-roledescription="slide"
+          aria-label={`${index + 1} of ${slides.length}: ${slide.title}`}
+          aria-hidden={index !== 0 ? "true" : undefined}
+          inert={index !== 0 ? true : undefined}
+        >
+          <Image
+            src={slide.image}
+            alt={slide.alt}
+            widths={[640, 960, 1280, 1600]}
+            sizes="100vw"
+            loading={index === 0 ? "eager" : "lazy"}
+            fetchpriority={index === 0 ? "high" : "auto"}
+            decoding={index === 0 ? "sync" : "async"}
+            class="hero__image"
+          />
+          <div class="hero__scrim" />
+          <div class="container hero__content">
+            <p class="hero__kicker">{slide.kicker}</p>
+            <p class="hero__title">{slide.title}</p>
+            <p class="hero__body">{slide.body}</p>
+            <p class="hero__actions">
+              <a class="btn btn--lg btn--on-dark" href={slide.cta.href}>
+                {slide.cta.label}
+                <Icon name="arrow-right" size={18} />
+              </a>
+              <a class="btn btn--lg btn--on-dark btn--secondary" href={slide.secondary.href}>
+                {slide.secondary.label}
+              </a>
+            </p>
+          </div>
+        </article>
+      ))
+    }
+  </div>
+
+  <div class="hero__controls hero__controls--arrows">
+    <button type="button" class="hero__arrow" data-hero-prev>
+      <span class="visually-hidden">Previous slide</span>
+      <Icon name="chevron-right" size={22} class="hero__arrow-icon--prev" />
+    </button>
+    <button type="button" class="hero__arrow" data-hero-next>
+      <span class="visually-hidden">Next slide</span>
+      <Icon name="chevron-right" size={22} />
+    </button>
+  </div>
+
+  <div class="container hero__controls hero__controls--dots">
+    <div class="hero__dots" role="tablist" aria-label="Choose a slide">
+      {
+        slides.map((slide, index) => (
+          <button
+            type="button"
+            class="hero__dot"
+            role="tab"
+            aria-selected={index === 0 ? "true" : "false"}
+            aria-controls={`hero-slide-${index + 1}`}
+            data-hero-dot={index}
+          >
+            <span class="visually-hidden">{slide.title}</span>
+          </button>
+        ))
+      }
+    </div>
+    <button type="button" class="hero__pause" data-hero-pause>
+      <span data-hero-pause-label>Pause</span>
+      <span class="visually-hidden"> the slideshow</span>
+    </button>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    background-color: var(--nelac-green-950);
+    isolation: isolate;
+  }
+
+  .hero__viewport {
+    position: relative;
+    display: grid;
+    /* Every slide occupies the same grid cell so the height never shifts. */
+    min-height: clamp(30rem, 74svh, 44rem);
+  }
+
+  .hero__slide {
+    grid-area: 1 / 1;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity var(--duration-slow) var(--ease-out),
+      visibility var(--duration-slow);
+  }
+
+  .hero__slide.is-active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .hero__slide.is-active .hero__content {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 420ms var(--ease-out) 220ms,
+      transform 420ms var(--ease-out) 220ms;
+  }
+
+  .no-js .hero__slide:first-child .hero__content {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Without JavaScript only the first slide is shown, and it stays visible. */
+  .no-js .hero__slide:first-child {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .no-js .hero__controls {
+    display: none;
+  }
+
+  :global(.hero__image) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 40%;
+  }
+
+  .hero__scrim {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(
+        to top,
+        rgb(6 35 26 / 0.92) 0%,
+        rgb(6 35 26 / 0.72) 32%,
+        rgb(6 35 26 / 0.3) 62%,
+        rgb(6 35 26 / 0.42) 100%
+      ),
+      linear-gradient(to right, rgb(6 35 26 / 0.65), transparent 65%);
+  }
+
+  /* The photograph crossfades, but only one slide's text is ever visible:
+     the outgoing text leaves quickly, the incoming text waits for it. */
+  .hero__content {
+    position: relative;
+    z-index: 1;
+    opacity: 0;
+    transform: translateY(0.75rem);
+    transition:
+      opacity 160ms var(--ease-out),
+      transform 160ms var(--ease-out);
+    padding-block: var(--space-8) calc(var(--space-10) + 1.5rem);
+    color: var(--color-text-inverse);
+    max-width: min(100%, 62rem);
+  }
+
+  .hero__kicker {
+    font-family: var(--font-sans);
+    font-size: var(--step-0);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--nelac-brass-300);
+  }
+
+  .hero__title {
+    margin-block-start: var(--space-3);
+    font-family: var(--font-display);
+    max-width: 16ch;
+    font-size: var(--step-5);
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: -0.02em;
+    text-shadow: 0 2px 24px rgb(6 35 26 / 0.4);
+  }
+
+  .hero__body {
+    max-width: 46ch;
+    margin-block-start: var(--space-4);
+    font-size: var(--step-1);
+    line-height: 1.6;
+    color: rgb(255 255 255 / 0.86);
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-block-start: var(--space-6);
+  }
+
+
+  /* ---------- Controls ---------- */
+  .hero__controls--arrows {
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline: clamp(0.4rem, 2vw, 1.5rem);
+    z-index: 2;
+    display: none;
+    justify-content: space-between;
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+
+  @media (min-width: 48rem) {
+    .hero__controls--arrows {
+      display: flex;
+    }
+  }
+
+  .hero__arrow {
+    pointer-events: auto;
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border: 1px solid rgb(255 255 255 / 0.35);
+    border-radius: var(--radius-full);
+    background-color: rgb(6 35 26 / 0.35);
+    color: #fff;
+    backdrop-filter: blur(4px);
+    transition:
+      background-color var(--duration) var(--ease-out),
+      border-color var(--duration) var(--ease-out);
+  }
+
+  .hero__arrow:hover {
+    background-color: rgb(6 35 26 / 0.7);
+    border-color: rgb(255 255 255 / 0.8);
+  }
+
+  :global(.hero__arrow-icon--prev) {
+    transform: rotate(180deg);
+  }
+
+  .hero__controls--dots {
+    position: absolute;
+    inset-block-end: var(--space-5);
+    inset-inline: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+  }
+
+  .hero__dots {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .hero__dot {
+    position: relative;
+    width: 2rem;
+    height: 0.3rem;
+    padding: 0;
+    border-radius: var(--radius-full);
+    background-color: rgb(255 255 255 / 0.35);
+    transition:
+      background-color var(--duration) var(--ease-out),
+      width var(--duration) var(--ease-out);
+  }
+
+  .hero__dot::before {
+    /* Enlarge the hit area to 44px without changing the visual size. */
+    content: "";
+    position: absolute;
+    inset-block: -1.1rem;
+    inset-inline: -0.35rem;
+  }
+
+  .hero__dot[aria-selected="true"] {
+    width: 3.25rem;
+    background-color: var(--nelac-brass-500);
+  }
+
+  .hero__pause {
+    padding: 0.35rem 0.85rem;
+    min-height: 2rem;
+    border: 1px solid rgb(255 255 255 / 0.3);
+    border-radius: var(--radius-full);
+    color: rgb(255 255 255 / 0.85);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .hero__pause:hover {
+    background-color: rgb(255 255 255 / 0.12);
+    color: #fff;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero__slide,
+    .hero__content,
+    .hero__slide.is-active .hero__content {
+      transition: none;
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  const hero = document.querySelector<HTMLElement>("[data-hero]");
+
+  if (hero) {
+    const slides = Array.from(
+      hero.querySelectorAll<HTMLElement>("[data-hero-slide]"),
+    );
+    const dots = Array.from(
+      hero.querySelectorAll<HTMLButtonElement>("[data-hero-dot]"),
+    );
+    const pause = hero.querySelector<HTMLButtonElement>("[data-hero-pause]");
+    const pauseLabel = hero.querySelector<HTMLElement>("[data-hero-pause-label]");
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    let index = 0;
+    let timer: number | undefined;
+    let playing = !reduced.matches;
+    const INTERVAL = 7000;
+
+    const show = (next: number) => {
+      index = (next + slides.length) % slides.length;
+
+      slides.forEach((slide, i) => {
+        const active = i === index;
+        slide.classList.toggle("is-active", active);
+        slide.toggleAttribute("inert", !active);
+        if (active) slide.removeAttribute("aria-hidden");
+        else slide.setAttribute("aria-hidden", "true");
+      });
+
+      dots.forEach((dot, i) =>
+        dot.setAttribute("aria-selected", String(i === index)),
+      );
+    };
+
+    const stop = () => {
+      window.clearInterval(timer);
+      timer = undefined;
+    };
+
+    const start = () => {
+      stop();
+      if (!playing) return;
+      timer = window.setInterval(() => show(index + 1), INTERVAL);
+    };
+
+    const setPlaying = (next: boolean) => {
+      playing = next;
+      if (pauseLabel) pauseLabel.textContent = playing ? "Pause" : "Play";
+      pause?.setAttribute("aria-pressed", String(!playing));
+      playing ? start() : stop();
+    };
+
+    show(0);
+    setPlaying(playing);
+
+    hero
+      .querySelector("[data-hero-next]")
+      ?.addEventListener("click", () => {
+        show(index + 1);
+        if (playing) start();
+      });
+
+    hero
+      .querySelector("[data-hero-prev]")
+      ?.addEventListener("click", () => {
+        show(index - 1);
+        if (playing) start();
+      });
+
+    dots.forEach((dot, i) =>
+      dot.addEventListener("click", () => {
+        show(i);
+        if (playing) start();
+      }),
+    );
+
+    pause?.addEventListener("click", () => setPlaying(!playing));
+
+    // Pause while the visitor is reading or interacting, and off-screen.
+    hero.addEventListener("mouseenter", stop);
+    hero.addEventListener("mouseleave", () => playing && start());
+    hero.addEventListener("focusin", stop);
+    hero.addEventListener("focusout", () => playing && start());
+
+    document.addEventListener("visibilitychange", () =>
+      document.hidden ? stop() : playing && start(),
+    );
+
+    reduced.addEventListener("change", (event) => {
+      if (event.matches) setPlaying(false);
+    });
+
+    // Left/right arrows move between slides when the carousel has focus.
+    hero.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        show(index + 1);
+      } else if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        show(index - 1);
+      }
+    });
+  }
+</script>

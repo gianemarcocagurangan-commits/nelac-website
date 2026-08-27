@@ -1,0 +1,174 @@
+---
+import PageLayout from "~/layouts/PageLayout.astro";
+import SectionHeading from "~/components/SectionHeading.astro";
+import ConferenceCard from "~/components/ConferenceCard.astro";
+import Notice from "~/components/Notice.astro";
+import Icon from "~/components/Icon.astro";
+import CallToAction from "~/components/CallToAction.astro";
+
+import { researchIntro, institutionalConferences, acra } from "~/content/research";
+---
+
+<PageLayout
+  title="Research & Publication"
+  heading="Research & publication"
+  eyebrow="Research"
+  description="The Institutional Research Conference and the Adventist Colleges Research Association at Northeast Luzon Adventist College, with themes, dates and speakers."
+  lead="A living culture of inquiry, innovation and service-driven education — where research becomes a tool for transformation, not just publication."
+  trail={[{ label: "Research & Publication" }]}
+>
+  <!-- ======= Institutional Research Conference ======= -->
+  <section class="section" id="irc" aria-labelledby="irc-title">
+    <div class="container">
+      <SectionHeading
+        eyebrow={researchIntro.eyebrow}
+        title={researchIntro.sectionTitle}
+        id="irc-title"
+      />
+
+      <div class="prose research-intro">
+        {researchIntro.paragraphs.map((paragraph) => <p set:html={paragraph} />)}
+      </div>
+
+      <div class="conferences">
+        {
+          institutionalConferences.map((conference, index) => (
+            <ConferenceCard conference={conference} eager={index === 0} />
+          ))
+        }
+      </div>
+
+      <Notice tone="pending" class="research-note">
+        The 1st, 2nd and 4th Institutional Research Conferences are not
+        documented on this website. Their details can be added to
+        <code>src/content/research.ts</code> when the school supplies them.
+      </Notice>
+    </div>
+  </section>
+
+  <!-- ======= ACRA ======= -->
+  <section class="section section--paper" id="acra" aria-labelledby="acra-title">
+    <div class="container">
+      <SectionHeading
+        eyebrow={acra.eyebrow}
+        title={acra.title}
+        id="acra-title"
+        lead={`${acra.legalName} — known as ${acra.abbreviation}. Northeast Luzon Adventist College is a member college.`}
+      />
+
+      {
+        acra.body.length > 0 ? (
+          <div class="prose">
+            {acra.body.map((paragraph) => (
+              <p set:html={paragraph} />
+            ))}
+          </div>
+        ) : (
+          <Notice tone="pending" title="Statement being prepared" class="acra__notice">
+            {acra.pendingNote}
+          </Notice>
+        )
+      }
+
+      <div class="acra__members">
+        <h3 class="acra__members-title">Member colleges</h3>
+        <ul class="acra__member-list">
+          {
+            acra.memberColleges.map((college) => (
+              <li>
+                <Icon name="graduation-cap" size={18} />
+                {college}
+              </li>
+            ))
+          }
+        </ul>
+        <p class="acra__members-source">
+          As shown on the association&rsquo;s own conference material.
+        </p>
+      </div>
+
+      <div class="acra__conference">
+        <ConferenceCard conference={acra.conference} />
+      </div>
+    </div>
+  </section>
+
+  <CallToAction
+    title="Interested in our research culture?"
+    text="Get in touch with the college to learn more about the Institutional Research Conference and ACRA."
+  />
+</PageLayout>
+
+<style>
+  .research-intro {
+    max-width: 68ch;
+    margin-block-end: var(--space-8);
+  }
+
+  .conferences {
+    display: grid;
+  }
+
+  :global(.research-note) {
+    margin-block-start: var(--space-7);
+  }
+
+  :global(.research-note) code {
+    font-size: 0.9em;
+    padding: 0.1em 0.35em;
+    border-radius: var(--radius-sm);
+    background-color: rgb(0 0 0 / 0.06);
+  }
+
+  :global(.acra__notice) {
+    margin-block-end: var(--space-7);
+  }
+
+  .acra__members {
+    margin-block-end: var(--space-8);
+    padding: var(--space-6);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background-color: var(--color-surface-alt);
+  }
+
+  .acra__members-title {
+    font-family: var(--font-sans);
+    font-size: 0.78rem;
+    font-weight: 650;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--color-text-subtle);
+  }
+
+  .acra__member-list {
+    display: grid;
+    gap: var(--space-3);
+    margin: var(--space-4) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (min-width: 44rem) {
+    .acra__member-list {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .acra__member-list li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-weight: 550;
+  }
+
+  .acra__member-list :global(svg) {
+    color: var(--color-accent);
+  }
+
+  .acra__members-source {
+    margin-block-start: var(--space-4);
+    font-size: var(--step--1);
+    color: var(--color-text-subtle);
+  }
+</style>

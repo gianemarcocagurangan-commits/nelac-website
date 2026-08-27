@@ -1,0 +1,364 @@
+---
+import Icon from "./Icon.astro";
+---
+
+<button
+  type="button"
+  class="search-trigger"
+  data-search-open
+  aria-haspopup="dialog"
+>
+  <Icon name="search" size={18} />
+  <span class="search-trigger__label">Search</span>
+</button>
+
+<dialog class="search-dialog" id="site-search" aria-label="Search this website">
+  <form class="search-dialog__inner" method="dialog" data-search-form>
+    <div class="search-dialog__field">
+      <Icon name="search" size={20} class="search-dialog__icon" />
+      <label class="visually-hidden" for="site-search-input">
+        Search Northeast Luzon Adventist College
+      </label>
+      <input
+        type="search"
+        id="site-search-input"
+        class="search-dialog__input"
+        placeholder="Search pages, departments, services, history…"
+        autocomplete="off"
+        spellcheck="false"
+        data-search-input
+      />
+      <button
+        type="button"
+        class="search-dialog__close"
+        data-search-close
+        aria-label="Close search"
+      >
+        <Icon name="x" size={20} />
+      </button>
+    </div>
+
+    <div
+      class="search-dialog__results"
+      role="region"
+      aria-live="polite"
+      data-search-results
+    >
+      <p class="search-dialog__hint">
+        Start typing to search across the whole website.
+      </p>
+    </div>
+  </form>
+</dialog>
+
+<style>
+  .search-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: 0.45rem 0.85rem;
+    min-height: 2.4rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    background-color: var(--color-surface);
+    color: var(--color-text-muted);
+    font-size: var(--step--1);
+    transition:
+      border-color var(--duration) var(--ease-out),
+      color var(--duration) var(--ease-out);
+  }
+
+  .search-trigger:hover {
+    border-color: var(--color-border-strong);
+    color: var(--color-text);
+  }
+
+  .search-trigger__label {
+    display: none;
+  }
+
+  @media (min-width: 64rem) {
+    .search-trigger__label {
+      display: inline;
+    }
+  }
+
+  .search-dialog {
+    width: min(40rem, calc(100vw - 2rem));
+    margin-inline: auto;
+    margin-block-start: clamp(3rem, 10vh, 7rem);
+    padding: 0;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background-color: var(--color-surface);
+    box-shadow: var(--shadow-lg);
+    color: var(--color-text);
+  }
+
+  .search-dialog::backdrop {
+    background-color: rgb(6 35 26 / 0.45);
+    backdrop-filter: blur(3px);
+  }
+
+  .search-dialog__field {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    border-block-end: 1px solid var(--color-border);
+  }
+
+  :global(.search-dialog__icon) {
+    color: var(--color-text-subtle);
+  }
+
+  .search-dialog__input {
+    flex: 1 1 auto;
+    min-width: 0;
+    border: none;
+    background: none;
+    font-size: var(--step-1);
+    outline: none;
+  }
+
+  .search-dialog__input::-webkit-search-cancel-button {
+    display: none;
+  }
+
+  .search-dialog__close {
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: var(--radius-full);
+    color: var(--color-text-muted);
+  }
+
+  .search-dialog__close:hover {
+    background-color: var(--color-surface-alt);
+    color: var(--color-text);
+  }
+
+  .search-dialog__results {
+    max-height: min(26rem, 55vh);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: var(--space-2);
+  }
+
+  .search-dialog__hint,
+  .search-dialog :global(.search-empty) {
+    padding: var(--space-5);
+    margin: 0;
+    text-align: center;
+    font-size: var(--step--1);
+    color: var(--color-text-subtle);
+  }
+
+  .search-dialog :global(.search-list) {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .search-dialog :global(.search-list a) {
+    display: block;
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .search-dialog :global(.search-list a:hover),
+  .search-dialog :global(.search-list a:focus-visible) {
+    background-color: var(--nelac-green-50);
+  }
+
+  .search-dialog :global(.search-list__title) {
+    display: block;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+
+  .search-dialog :global(.search-list__section) {
+    display: block;
+    margin-block-start: 2px;
+    font-size: var(--step--1);
+    color: var(--color-accent);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .search-dialog :global(.search-list__text) {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-block-start: 3px;
+    font-size: var(--step--1);
+    color: var(--color-text-muted);
+  }
+
+  @media (max-width: 40rem) {
+    .search-dialog {
+      margin-block-start: 1rem;
+    }
+  }
+</style>
+
+<script>
+  interface SearchEntry {
+    title: string;
+    href: string;
+    section: string;
+    text: string;
+  }
+
+  const dialog = document.getElementById("site-search") as HTMLDialogElement | null;
+
+  if (dialog) {
+    const input = dialog.querySelector<HTMLInputElement>("[data-search-input]")!;
+    const results = dialog.querySelector<HTMLElement>("[data-search-results]")!;
+    const form = dialog.querySelector<HTMLFormElement>("[data-search-form]")!;
+
+    /* The index is fetched the first time search is opened, not on page load. */
+    let entries: SearchEntry[] = [];
+    let loading: Promise<void> | null = null;
+
+    const load = (): Promise<void> => {
+      if (loading) return loading;
+      loading = fetch("/search-index.json")
+        .then((response) => {
+          if (!response.ok) throw new Error(String(response.status));
+          return response.json();
+        })
+        .then((data: SearchEntry[]) => {
+          entries = data;
+        })
+        .catch(() => {
+          loading = null;
+          results.innerHTML =
+            '<p class="search-empty">Search is unavailable at the moment. Please use the menu, or <a href="/contact">contact the school</a>.</p>';
+          throw new Error("search index unavailable");
+        });
+      return loading;
+    };
+
+    const open = () => {
+      if (!dialog.open) dialog.showModal();
+      input.value = "";
+      results.innerHTML =
+        '<p class="search-dialog__hint">Loading the index&hellip;</p>';
+      load().then(() => render(input.value.trim())).catch(() => {});
+      // Focus after the dialog paints so mobile keyboards behave.
+      requestAnimationFrame(() => input.focus());
+    };
+
+    const close = () => dialog.open && dialog.close();
+
+    const score = (entry: SearchEntry, terms: string[]): number => {
+      const title = entry.title.toLowerCase();
+      const text = entry.text.toLowerCase();
+      let total = 0;
+      for (const term of terms) {
+        if (title.startsWith(term)) total += 12;
+        else if (title.includes(term)) total += 8;
+        else if (text.includes(term)) total += 3;
+        else return 0;
+      }
+      return total;
+    };
+
+    const escapeHtml = (value: string) =>
+      value.replace(/[&<>"']/g, (char) =>
+        ({
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;",
+        })[char]!,
+      );
+
+    const render = (query: string) => {
+      const terms = query.toLowerCase().split(/\s+/).filter(Boolean);
+
+      if (entries.length === 0) {
+        results.innerHTML =
+          '<p class="search-dialog__hint">Loading the index&hellip;</p>';
+        return;
+      }
+
+      if (terms.length === 0) {
+        results.innerHTML =
+          '<p class="search-dialog__hint">Start typing to search across the whole website.</p>';
+        return;
+      }
+
+      const matches = entries
+        .map((entry) => ({ entry, score: score(entry, terms) }))
+        .filter((match) => match.score > 0)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 12);
+
+      if (matches.length === 0) {
+        results.innerHTML = `<p class="search-empty">No results for &ldquo;${escapeHtml(
+          query,
+        )}&rdquo;. Try a different word, or <a href="/contact">contact the school</a>.</p>`;
+        return;
+      }
+
+      results.innerHTML = `<ul class="search-list">${matches
+        .map(
+          ({ entry }) => `<li>
+            <a href="${entry.href}">
+              <span class="search-list__section">${escapeHtml(entry.section)}</span>
+              <span class="search-list__title">${escapeHtml(entry.title)}</span>
+              <span class="search-list__text">${escapeHtml(entry.text)}</span>
+            </a>
+          </li>`,
+        )
+        .join("")}</ul>`;
+    };
+
+    let timer: number | undefined;
+    input.addEventListener("input", () => {
+      window.clearTimeout(timer);
+      timer = window.setTimeout(
+        () => load().then(() => render(input.value.trim())).catch(() => {}),
+        90,
+      );
+    });
+
+    // Enter follows the first result rather than submitting anything.
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const first = results.querySelector<HTMLAnchorElement>(".search-list a");
+      if (first) {
+        close();
+        window.location.assign(first.href);
+      }
+    });
+
+    document
+      .querySelectorAll<HTMLButtonElement>("[data-search-open]")
+      .forEach((trigger) => trigger.addEventListener("click", open));
+
+    dialog
+      .querySelector<HTMLButtonElement>("[data-search-close]")
+      ?.addEventListener("click", close);
+
+    // Click on the backdrop closes the dialog.
+    dialog.addEventListener("click", (event) => {
+      if (event.target === dialog) close();
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+        event.preventDefault();
+        dialog.open ? close() : open();
+      }
+    });
+  }
+</script>

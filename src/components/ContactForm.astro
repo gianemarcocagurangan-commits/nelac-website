@@ -1,0 +1,430 @@
+---
+import { contact } from "~/content/site";
+import Icon from "./Icon.astro";
+import Notice from "./Notice.astro";
+
+/**
+ * Contact form.
+ *
+ * There is no backend on this static site, so the form does not pretend to
+ * submit anything. Once the fields validate it opens the visitor's own email
+ * app with the message pre-filled and addressed to the school.
+ *
+ * TO CONNECT A BACKEND LATER: set PUBLIC_CONTACT_ENDPOINT in a .env file to
+ * the URL of a form handler that accepts JSON. The script below will then POST
+ * to it (with loading, success and error states already implemented) instead
+ * of falling back to the email app. Nothing else needs to change.
+ */
+const endpoint = import.meta.env.PUBLIC_CONTACT_ENDPOINT ?? "";
+
+const subjects = [
+  "General enquiry",
+  "Admission and Records",
+  "Finance",
+  "Job Vacancy",
+  "Other",
+];
+---
+
+<form
+  class="contact-form"
+  data-contact-form
+  data-endpoint={endpoint}
+  data-email={contact.email}
+  novalidate
+>
+  <div class="contact-form__row">
+    <div class="field">
+      <label class="field__label" for="cf-name">
+        Full name <span class="field__required" aria-hidden="true">*</span>
+      </label>
+      <input
+        class="field__input"
+        type="text"
+        id="cf-name"
+        name="name"
+        autocomplete="name"
+        required
+        aria-describedby="cf-name-error"
+      />
+      <p class="field__error" id="cf-name-error" data-error hidden></p>
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="cf-email">
+        Email address <span class="field__required" aria-hidden="true">*</span>
+      </label>
+      <input
+        class="field__input"
+        type="email"
+        id="cf-email"
+        name="email"
+        autocomplete="email"
+        required
+        aria-describedby="cf-email-error"
+      />
+      <p class="field__error" id="cf-email-error" data-error hidden></p>
+    </div>
+  </div>
+
+  <div class="contact-form__row">
+    <div class="field">
+      <label class="field__label" for="cf-phone">
+        Contact number <span class="field__optional">(optional)</span>
+      </label>
+      <input
+        class="field__input"
+        type="tel"
+        id="cf-phone"
+        name="phone"
+        autocomplete="tel"
+        inputmode="tel"
+        aria-describedby="cf-phone-error"
+      />
+      <p class="field__error" id="cf-phone-error" data-error hidden></p>
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="cf-subject">
+        What is this about? <span class="field__required" aria-hidden="true">*</span>
+      </label>
+      <select
+        class="field__input field__input--select"
+        id="cf-subject"
+        name="subject"
+        required
+        aria-describedby="cf-subject-error"
+      >
+        {subjects.map((subject) => <option value={subject}>{subject}</option>)}
+      </select>
+      <p class="field__error" id="cf-subject-error" data-error hidden></p>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="field__label" for="cf-message">
+      Message <span class="field__required" aria-hidden="true">*</span>
+    </label>
+    <textarea
+      class="field__input field__input--textarea"
+      id="cf-message"
+      name="message"
+      rows="6"
+      required
+      minlength="10"
+      aria-describedby="cf-message-error"></textarea>
+    <p class="field__error" id="cf-message-error" data-error hidden></p>
+  </div>
+
+  <div class="contact-form__foot">
+    <button type="submit" class="btn btn--lg" data-submit>
+      <span class="btn__spinner" aria-hidden="true"></span>
+      <span data-submit-label>Send message</span>
+      <Icon name="arrow-right" size={18} class="btn__icon" />
+    </button>
+    <p class="contact-form__required-note">
+      Fields marked <span aria-hidden="true">*</span>
+      <span class="visually-hidden">with an asterisk</span> are required.
+    </p>
+  </div>
+
+  <div class="contact-form__status" role="status" aria-live="polite" data-status></div>
+
+  <Notice tone="info" class="contact-form__how">
+    This form opens your own email app with the message ready to send to
+    <a href={`mailto:${contact.email}`}>{contact.email}</a>. Nothing is stored
+    on this website. You can also email or call the school directly using the
+    details on this page.
+  </Notice>
+</form>
+
+<style>
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .contact-form__row {
+    display: grid;
+    gap: var(--space-5);
+  }
+
+  @media (min-width: 40rem) {
+    .contact-form__row {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .field__label {
+    font-size: var(--step--1);
+    font-weight: 600;
+    color: var(--color-text);
+  }
+
+  .field__required {
+    color: var(--nelac-danger-700);
+  }
+
+  .field__optional {
+    font-weight: 400;
+    color: var(--color-text-subtle);
+  }
+
+  .field__input {
+    width: 100%;
+    min-height: 3rem;
+    padding: 0.7rem 0.9rem;
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-md);
+    background-color: var(--color-surface);
+    font-size: var(--step-0);
+    transition:
+      border-color var(--duration) var(--ease-out),
+      box-shadow var(--duration) var(--ease-out);
+  }
+
+  .field__input:hover {
+    border-color: var(--nelac-ink-300);
+  }
+
+  .field__input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--nelac-green-100);
+  }
+
+  .field__input:focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 1px;
+  }
+
+  .field__input--textarea {
+    min-height: 9rem;
+    resize: vertical;
+    line-height: 1.6;
+  }
+
+  .field__input--select {
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='none' stroke='%234e5a53' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 8 5 5 5-5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.85rem center;
+    padding-inline-end: 2.5rem;
+  }
+
+  .field__input[aria-invalid="true"] {
+    border-color: var(--nelac-danger-700);
+    background-color: var(--nelac-danger-50);
+  }
+
+  .field__error {
+    font-size: var(--step--1);
+    font-weight: 500;
+    color: var(--nelac-danger-700);
+  }
+
+  .field__error[hidden] {
+    display: none;
+  }
+
+  .contact-form__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3) var(--space-5);
+  }
+
+
+  .contact-form__required-note {
+    font-size: var(--step--1);
+    color: var(--color-text-subtle);
+  }
+
+  .contact-form__status:empty {
+    display: none;
+  }
+
+</style>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>("[data-contact-form]");
+
+  if (form) {
+    const status = form.querySelector<HTMLElement>("[data-status]")!;
+    const submit = form.querySelector<HTMLButtonElement>("[data-submit]")!;
+    const submitLabel = form.querySelector<HTMLElement>("[data-submit-label]")!;
+    const endpoint = form.dataset.endpoint ?? "";
+    const schoolEmail = form.dataset.email ?? "";
+
+    const messages: Record<string, (field: HTMLInputElement) => string> = {
+      name: () => "Please tell us your name.",
+      email: (field) =>
+        field.value.trim() === ""
+          ? "Please enter your email address."
+          : "Please enter a valid email address, for example name@example.com.",
+      subject: () => "Please choose what your message is about.",
+      message: (field) =>
+        field.value.trim().length === 0
+          ? "Please write your message."
+          : "Please write at least 10 characters so we can help you properly.",
+      phone: () => "Please enter a valid contact number, or leave this blank.",
+    };
+
+    const fields = Array.from(
+      form.querySelectorAll<HTMLInputElement>("input, select, textarea"),
+    );
+
+    const errorFor = (field: HTMLElement) =>
+      form.querySelector<HTMLElement>(`#${field.id}-error`);
+
+    const showError = (field: HTMLInputElement, message: string) => {
+      field.setAttribute("aria-invalid", "true");
+      const box = errorFor(field);
+      if (box) {
+        box.textContent = message;
+        box.hidden = false;
+      }
+    };
+
+    const clearError = (field: HTMLInputElement) => {
+      field.removeAttribute("aria-invalid");
+      const box = errorFor(field);
+      if (box) {
+        box.textContent = "";
+        box.hidden = true;
+      }
+    };
+
+    const validateField = (field: HTMLInputElement): boolean => {
+      // Optional phone: only validate when something was typed.
+      if (field.name === "phone" && field.value.trim() === "") {
+        clearError(field);
+        return true;
+      }
+
+      // `tooShort` only applies to values the visitor typed, so check the
+      // minimum length ourselves as well.
+      const min = Number(field.getAttribute("minlength") ?? 0);
+      const tooShort = min > 0 && field.value.trim().length < min;
+
+      if (field.checkValidity() && !tooShort) {
+        clearError(field);
+        return true;
+      }
+
+      showError(
+        field,
+        (messages[field.name] ?? (() => "Please check this field."))(field),
+      );
+      return false;
+    };
+
+    fields.forEach((field) => {
+      field.addEventListener("blur", () => {
+        if (field.value !== "" || field.hasAttribute("aria-invalid")) {
+          validateField(field);
+        }
+      });
+      field.addEventListener("input", () => {
+        if (field.hasAttribute("aria-invalid")) validateField(field);
+      });
+    });
+
+    const setStatus = (
+      tone: "success" | "error" | "info",
+      title: string,
+      body: string,
+    ) => {
+      status.innerHTML = `<div class="notice notice--${tone}" role="alert">
+        <div class="notice__body">
+          <p class="notice__title">${title}</p>
+          <div class="notice__text"><p>${body}</p></div>
+        </div>
+      </div>`;
+    };
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      status.innerHTML = "";
+
+      const invalid = fields.filter((field) => !validateField(field));
+      if (invalid.length > 0) {
+        invalid[0]!.focus();
+        setStatus(
+          "error",
+          "Please check the form",
+          `${invalid.length} field${invalid.length > 1 ? "s need" : " needs"} your attention before the message can be sent.`,
+        );
+        return;
+      }
+
+      const data = Object.fromEntries(new FormData(form).entries()) as Record<
+        string,
+        string
+      >;
+
+      /* Path A — a form backend has been configured. */
+      if (endpoint) {
+        submit.dataset.loading = "true";
+        submit.disabled = true;
+        submitLabel.textContent = "Sending…";
+
+        try {
+          const response = await fetch(endpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+          });
+
+          if (!response.ok) throw new Error(String(response.status));
+
+          form.reset();
+          setStatus(
+            "success",
+            "Message sent",
+            "Thank you for writing to Northeast Luzon Adventist College. We will reply to the email address you gave us.",
+          );
+        } catch {
+          setStatus(
+            "error",
+            "The message could not be sent",
+            `Something went wrong on our side. Please email <a href="mailto:${schoolEmail}">${schoolEmail}</a> directly, or try again in a few minutes.`,
+          );
+        } finally {
+          delete submit.dataset.loading;
+          submit.disabled = false;
+          submitLabel.textContent = "Send message";
+        }
+        return;
+      }
+
+      /* Path B — no backend: hand the message to the visitor's email app. */
+      const subject = `[${data.subject}] Website enquiry from ${data.name}`;
+      const bodyLines = [
+        `Name: ${data.name}`,
+        `Email: ${data.email}`,
+        data.phone ? `Contact number: ${data.phone}` : null,
+        `Subject: ${data.subject}`,
+        "",
+        data.message,
+      ].filter(Boolean);
+
+      window.location.href = `mailto:${schoolEmail}?subject=${encodeURIComponent(
+        subject,
+      )}&body=${encodeURIComponent(bodyLines.join("\n"))}`;
+
+      setStatus(
+        "success",
+        "Your email app is opening",
+        `Your message to <a href="mailto:${schoolEmail}">${schoolEmail}</a> has been prepared — press send in your email app to deliver it. If nothing opened, please copy your message and email the school directly.`,
+      );
+    });
+  }
+</script>

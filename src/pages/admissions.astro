@@ -1,0 +1,358 @@
+---
+import PageLayout from "~/layouts/PageLayout.astro";
+import SectionHeading from "~/components/SectionHeading.astro";
+import Notice from "~/components/Notice.astro";
+import Icon from "~/components/Icon.astro";
+import CallToAction from "~/components/CallToAction.astro";
+
+import { Image } from "astro:assets";
+import admissionPoster from "~/assets/images/announcements/admission-poster.jpg";
+import { admissionsIntro, admissionSteps } from "~/content/admissions";
+import { departments } from "~/content/academics";
+import { contact } from "~/content/site";
+---
+
+<PageLayout
+  title="Admissions"
+  heading="How to join NELAC"
+  eyebrow={admissionsIntro.eyebrow}
+  description="How to enrol at Northeast Luzon Adventist College — the departments on offer, indicative fees, and how to reach the Admission and Records Office in Mabini, Alicia, Isabela."
+  lead={admissionsIntro.lead}
+  trail={[{ label: "Admissions" }]}
+>
+  <!-- ======= Steps ======= -->
+  <section class="section" aria-labelledby="steps-title">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Step by step"
+        title="Five steps to enrolment"
+        id="steps-title"
+      />
+
+      <ol class="steps">
+        {
+          admissionSteps.map((step, index) => (
+            <li class="step" data-reveal style={`--reveal-delay:${index * 70}ms`}>
+              <span class="step__number" aria-hidden="true">
+                {String(step.number).padStart(2, "0")}
+              </span>
+              <div class="step__body">
+                <h3 class="step__title">{step.title}</h3>
+                <p class="step__text">{step.description}</p>
+                {step.pending && (
+                  <Notice tone="pending" class="step__notice">
+                    {step.pending}
+                  </Notice>
+                )}
+                {step.action && (
+                  <a class="link-arrow step__action" href={step.action.href}>
+                    {step.action.label}
+                    <Icon name="arrow-right" size={17} />
+                  </a>
+                )}
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- ======= The school's own admission poster ======= -->
+  <section class="section section--alt" id="poster" aria-labelledby="poster-title">
+    <div class="container poster">
+      <div class="poster__copy">
+        <SectionHeading
+          eyebrow="From the school"
+          title="The college&rsquo;s admission poster"
+          id="poster-title"
+        />
+        <p class="poster__text">
+          This is the admission announcement Northeast Luzon Adventist College
+          published itself. It is reproduced here exactly as the school issued
+          it.
+        </p>
+        <Notice tone="pending" title="Please confirm before relying on it">
+          The poster is undated, and this website cannot confirm whether the
+          offer shown on it is still open or which learners it applies to.
+          Confirm the current terms with the Admission and Records Office
+          before making plans.
+        </Notice>
+        <p class="poster__link">
+          <a class="link-arrow" href="#office">
+            Contact the office
+            <Icon name="arrow-right" size={18} />
+          </a>
+        </p>
+      </div>
+
+      <figure class="poster__figure">
+        <Image
+          src={admissionPoster}
+          alt="Admission poster of Northeast Luzon Adventist College, Inc. headed &ldquo;School Admission Now Open&rdquo;, showing students in school uniform, the line &ldquo;Qualify to avail free tuition fee&rdquo;, a QR code captioned &ldquo;Scan the code for reservation&rdquo;, the words &ldquo;We Offer More Than Education. We Shape Character.&rdquo;, and a column of accrediting and certifying agency seals."
+          widths={[400, 800, 1200, 1600]}
+          sizes="(min-width: 62rem) 55vw, 92vw"
+          loading="lazy"
+          class="poster__image"
+        />
+        <figcaption class="poster__caption">
+          The school&rsquo;s admission poster, as published. The QR code shown on
+          it is part of the original artwork.
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ======= Departments quick list ======= -->
+  <section class="section section--paper" aria-labelledby="choose-title">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Programmes"
+        title="What you can study"
+        id="choose-title"
+        lead="The departments Northeast Luzon Adventist College currently offers."
+      />
+      <ul class="programmes">
+        {
+          departments.map((department, index) => (
+            <li class="programme" data-reveal style={`--reveal-delay:${index * 55}ms`}>
+              <a href={`/academics#${department.slug}`}>
+                <span class="programme__name">{department.name}</span>
+                <span class="programme__fee">{department.indicativeFee}</span>
+                <Icon name="arrow-right" size={18} class="programme__arrow" />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="programmes__note">
+        Amounts are the approximate figures published by the school.
+        <a href="/finance">See financial information</a>.
+      </p>
+    </div>
+  </section>
+
+  <!-- ======= Contact the office ======= -->
+  <section class="section section--alt" id="office" aria-labelledby="office-title">
+    <div class="container container--narrow">
+      <SectionHeading
+        eyebrow="Admission and Records"
+        title="Talk to the office"
+        id="office-title"
+        lead="The Admission and Records Office holds the current requirements, deadlines and enrolment schedule for every department."
+      />
+
+      <ul class="office-contacts">
+        <li>
+          <Icon name="mail" size={20} />
+          <a href={`mailto:${contact.email}`}>{contact.email}</a>
+        </li>
+        <li>
+          <Icon name="phone" size={20} />
+          <a href={`tel:${contact.phoneHref}`}>{contact.phone}</a>
+        </li>
+        <li>
+          <Icon name="map-pin" size={20} />
+          <span>{contact.addressOneLine}</span>
+        </li>
+      </ul>
+
+      <p class="office-more">
+        <a class="link-arrow" href="/contact">
+          Send a message to the school
+          <Icon name="arrow-right" size={18} />
+        </a>
+      </p>
+
+      <Notice tone="info" title="Why this page is short" class="office-note">
+        Northeast Luzon Adventist College has not published an official list of
+        admission requirements, deadlines or application fees. Rather than guess
+        at them, this page points you to the office that holds the real answers.
+      </Notice>
+    </div>
+  </section>
+
+  <CallToAction
+    title="Questions about enrolling?"
+    text="The Admission and Records Office will walk you through the requirements for your department."
+  />
+</PageLayout>
+
+<style>
+  .poster {
+    display: grid;
+    gap: var(--space-7);
+    align-items: start;
+  }
+
+  @media (min-width: 62rem) {
+    .poster {
+      grid-template-columns: minmax(0, 22rem) minmax(0, 1fr);
+      gap: var(--space-8);
+    }
+  }
+
+  .poster__text {
+    margin-block-end: var(--space-5);
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .poster__link {
+    margin-block-start: var(--space-5);
+  }
+
+  .poster__figure {
+    margin: 0;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background-color: var(--color-surface);
+  }
+
+  :global(.poster__image) {
+    width: 100%;
+    height: auto;
+  }
+
+  .poster__caption {
+    padding: var(--space-3) var(--space-4);
+    border-block-start: 1px solid var(--color-border);
+    font-size: var(--step--1);
+    color: var(--color-text-subtle);
+  }
+
+  .steps {
+    display: grid;
+    gap: var(--space-6);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: step;
+  }
+
+  @media (min-width: 62rem) {
+    .steps {
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-7) var(--space-8);
+    }
+  }
+
+  .step {
+    display: flex;
+    gap: var(--space-4);
+  }
+
+  .step__number {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border: 1px solid var(--nelac-brass-200);
+    border-radius: var(--radius-full);
+    background-color: var(--nelac-brass-50);
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    font-weight: 600;
+    color: var(--color-accent);
+  }
+
+  .step__title {
+    font-size: var(--step-2);
+  }
+
+  .step__text {
+    margin-block-start: var(--space-2);
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  :global(.step__notice) {
+    margin-block-start: var(--space-4);
+  }
+
+  .step__action {
+    margin-block-start: var(--space-4);
+    font-size: var(--step--1);
+  }
+
+  .programmes {
+    display: grid;
+    gap: var(--space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .programme a {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-4);
+    padding: var(--space-4) var(--space-5);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-surface);
+    color: inherit;
+    text-decoration: none;
+    transition:
+      border-color var(--duration) var(--ease-out),
+      background-color var(--duration) var(--ease-out);
+  }
+
+  .programme a:hover {
+    border-color: var(--nelac-green-200);
+    background-color: var(--nelac-green-50);
+  }
+
+  .programme__name {
+    flex: 1 1 12rem;
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    font-weight: 600;
+  }
+
+  .programme__fee {
+    font-size: var(--step--1);
+    font-weight: 600;
+    color: var(--color-accent);
+    white-space: nowrap;
+  }
+
+  :global(.programme__arrow) {
+    color: var(--color-text-subtle);
+  }
+
+  .programmes__note {
+    margin-block-start: var(--space-5);
+    font-size: var(--step--1);
+    color: var(--color-text-subtle);
+  }
+
+  .office-contacts {
+    display: grid;
+    gap: var(--space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .office-contacts li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .office-contacts :global(svg) {
+    color: var(--color-accent);
+  }
+
+  .office-more {
+    margin-block-start: var(--space-6);
+  }
+
+  :global(.office-note) {
+    margin-block-start: var(--space-6);
+  }
+</style>

@@ -1,0 +1,124 @@
+/* =========================================================================
+   NELAC DESIGN TOKENS
+   Single source of truth for colour, type, spacing, radii and motion.
+   ========================================================================= */
+
+:root {
+  color-scheme: light;
+
+  /* --- Brand palette -----------------------------------------------------
+     Evergreen recalls the Cagayan valley campus; brass is used sparingly for
+     emphasis, rules and focus. */
+  --nelac-green-950: #06231a;
+  --nelac-green-900: #0b3d2e;
+  --nelac-green-800: #0f4a38;
+  --nelac-green-700: #146046;
+  --nelac-green-600: #1d7a58;
+  --nelac-green-500: #2a9469;
+  --nelac-green-200: #a9d8c2;
+  --nelac-green-100: #d8ece2;
+  --nelac-green-50: #eef7f2;
+
+  --nelac-brass-700: #8a6414;
+  --nelac-brass-600: #a97c1e;
+  --nelac-brass-500: #c1922c;
+  --nelac-brass-300: #e2c67f;
+  --nelac-brass-200: #f0dfb4;
+  --nelac-brass-50: #fbf3e2;
+
+  --nelac-ink-900: #121815;
+  --nelac-ink-700: #2b342f;
+  --nelac-ink-500: #4e5a53;
+  --nelac-ink-400: #6c7871;
+  --nelac-ink-300: #97a19a;
+
+  --nelac-paper: #ffffff;
+  --nelac-ivory: #f8f6f1;
+  --nelac-ivory-deep: #f1eee6;
+  --nelac-line: #e2ded4;
+  --nelac-line-strong: #cfc9bb;
+
+  --nelac-danger-700: #8c2f22;
+  --nelac-danger-50: #fdf0ee;
+  --nelac-success-700: #145c3f;
+
+  /* --- Semantic ---------------------------------------------------------- */
+  --color-bg: var(--nelac-ivory);
+  --color-surface: var(--nelac-paper);
+  --color-surface-alt: var(--nelac-ivory-deep);
+  --color-surface-inverse: var(--nelac-green-950);
+  --color-text: var(--nelac-ink-900);
+  --color-text-muted: var(--nelac-ink-500);
+  --color-text-subtle: var(--nelac-ink-400);
+  --color-text-inverse: #f4f7f5;
+  --color-text-inverse-muted: #b6c9c0;
+  --color-primary: var(--nelac-green-900);
+  --color-primary-hover: var(--nelac-green-700);
+  --color-accent: var(--nelac-brass-600);
+  --color-border: var(--nelac-line);
+  --color-border-strong: var(--nelac-line-strong);
+  --color-focus: var(--nelac-brass-600);
+
+  /* --- Typography --------------------------------------------------------- */
+  --font-display: "Source Serif 4 Variable", "Source Serif 4", Georgia,
+    "Times New Roman", serif;
+  --font-sans: "Inter Variable", "Inter", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  /* Fluid type scale (min at 360px, max at 1280px) */
+  --step--1: clamp(0.82rem, 0.79rem + 0.13vw, 0.9rem);
+  --step-0: clamp(1rem, 0.96rem + 0.18vw, 1.075rem);
+  --step-1: clamp(1.15rem, 1.08rem + 0.32vw, 1.35rem);
+  --step-2: clamp(1.35rem, 1.22rem + 0.58vw, 1.7rem);
+  --step-3: clamp(1.6rem, 1.38rem + 0.98vw, 2.2rem);
+  --step-4: clamp(1.9rem, 1.5rem + 1.75vw, 2.95rem);
+  --step-5: clamp(2.25rem, 1.6rem + 2.85vw, 3.9rem);
+
+  --leading-tight: 1.12;
+  --leading-snug: 1.3;
+  --leading-normal: 1.65;
+  --tracking-eyebrow: 0.14em;
+
+  /* --- Space (4px base) --------------------------------------------------- */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 2.5rem;
+  --space-8: 3rem;
+  --space-9: 4rem;
+  --space-10: 5rem;
+  --section-y: clamp(3.25rem, 2rem + 5vw, 6.5rem);
+
+  /* --- Layout ------------------------------------------------------------- */
+  --container: 76rem;
+  --container-narrow: 46rem;
+  --gutter: clamp(1.15rem, 0.6rem + 2.4vw, 2.5rem);
+  --header-height: 4.5rem;
+
+  /* --- Radii & elevation --------------------------------------------------- */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 999px;
+
+  --shadow-xs: 0 1px 2px rgb(18 24 21 / 0.06);
+  --shadow-sm: 0 1px 3px rgb(18 24 21 / 0.07), 0 6px 14px -8px rgb(18 24 21 / 0.12);
+  --shadow-md: 0 2px 6px rgb(18 24 21 / 0.06), 0 16px 32px -18px rgb(18 24 21 / 0.24);
+  --shadow-lg: 0 4px 10px rgb(18 24 21 / 0.07), 0 28px 60px -28px rgb(18 24 21 / 0.3);
+
+  /* --- Motion -------------------------------------------------------------- */
+  --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0.05, 0.36, 1);
+  --duration-fast: 140ms;
+  --duration: 240ms;
+  --duration-slow: 520ms;
+
+  --z-header: 100;
+  --z-drawer: 200;
+  --z-modal: 300;
+  --z-toast: 400;
+}

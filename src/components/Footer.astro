@@ -1,0 +1,253 @@
+---
+import { Image } from "astro:assets";
+import { site, contact, social, footerLinks, copyright } from "~/content/site";
+import seal from "~/assets/images/brand/nelac-seal.png";
+import Icon from "./Icon.astro";
+
+const year = new Date().getFullYear();
+const copyrightYears =
+  year > copyright.since ? `${copyright.since}–${year}` : `${copyright.since}`;
+---
+
+<footer class="site-footer">
+  <div class="container site-footer__grid">
+    <div class="site-footer__brand">
+      <a class="footer-brand" href="/">
+        <Image
+          src={seal}
+          alt=""
+          width={40}
+          height={36}
+          loading="lazy"
+          densities={[1, 2]}
+        />
+        <span>{site.wordmark}</span>
+      </a>
+
+      <p class="site-footer__legal">
+        {site.legalName}<br />
+        <span>{site.membership}</span>
+      </p>
+
+      <address class="site-footer__address">
+        {contact.address.line1}<br />
+        {contact.address.line2}<br />
+        {contact.address.country}
+      </address>
+
+      <p class="site-footer__contact">
+        <a href={`mailto:${contact.email}`}>
+          <Icon name="mail" size={16} />{contact.email}
+        </a>
+        <a href={`tel:${contact.phoneHref}`}>
+          <Icon name="phone" size={16} />{contact.phone}
+        </a>
+      </p>
+    </div>
+
+    {
+      footerLinks.map((group) => (
+        <nav class="site-footer__links" aria-label={group.heading}>
+          <h2 class="site-footer__heading">{group.heading}</h2>
+          <ul>
+            {group.links.map((link) => (
+              <li>
+                <Icon name="chevron-right" size={14} />
+                <a href={link.href}>{link.label}</a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      ))
+    }
+
+    <div class="site-footer__links">
+      <h2 class="site-footer__heading">Our Facebook page</h2>
+      <p class="site-footer__social">
+        {
+          social.map((item) => (
+            <a
+              href={item.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="social-link"
+            >
+              <Icon name="facebook" size={18} />
+              <span class="visually-hidden">
+                {`${site.shortName} on ${item.label} (opens in a new tab)`}
+              </span>
+            </a>
+          ))
+        }
+      </p>
+      <p class="site-footer__note">{site.tagline}</p>
+    </div>
+  </div>
+
+  <div class="container site-footer__bottom">
+    <p class="site-footer__copyright">
+      &copy; Copyright <strong>{copyright.holder}</strong> | {copyrightYears}
+    </p>
+    <p class="site-footer__credit">{copyright.credit}</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background-color: var(--nelac-green-950);
+    color: var(--color-text-inverse-muted);
+    font-size: var(--step--1);
+  }
+
+  .site-footer__grid {
+    display: grid;
+    gap: var(--space-7) var(--space-6);
+    padding-block: var(--space-9) var(--space-7);
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 40rem) {
+    .site-footer__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 62rem) {
+    .site-footer__grid {
+      grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    }
+  }
+
+  .footer-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--color-text-inverse);
+    text-decoration: none;
+  }
+
+  .footer-brand :global(img) {
+    width: 2.2rem;
+    height: auto;
+  }
+
+  .site-footer__legal {
+    margin-block-start: var(--space-4);
+    font-weight: 600;
+    color: var(--color-text-inverse);
+    line-height: 1.6;
+  }
+
+  .site-footer__legal span {
+    display: block;
+    font-weight: 400;
+    font-size: 0.8rem;
+    color: var(--color-text-inverse-muted);
+  }
+
+  .site-footer__address {
+    margin-block-start: var(--space-4);
+    font-style: normal;
+    line-height: 1.75;
+  }
+
+  .site-footer__contact {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin-block-start: var(--space-4);
+  }
+
+  .site-footer a {
+    color: var(--color-text-inverse-muted);
+    text-decoration: none;
+    transition: color var(--duration) var(--ease-out);
+  }
+
+  .site-footer a:hover {
+    color: var(--color-text-inverse);
+    text-decoration: underline;
+  }
+
+  .site-footer__contact a {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .site-footer__heading {
+    margin-block-end: var(--space-4);
+    font-family: var(--font-sans);
+    font-size: var(--step--1);
+    font-weight: 650;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--nelac-brass-300);
+  }
+
+  .site-footer__links ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .site-footer__links li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .site-footer__links li :global(svg) {
+    color: var(--nelac-green-500);
+  }
+
+  .social-link {
+    display: inline-grid;
+    place-items: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    border: 1px solid rgb(255 255 255 / 0.18);
+    border-radius: var(--radius-full);
+    transition:
+      background-color var(--duration) var(--ease-out),
+      border-color var(--duration) var(--ease-out);
+  }
+
+  .social-link:hover {
+    background-color: rgb(255 255 255 / 0.1);
+    border-color: rgb(255 255 255 / 0.35);
+  }
+
+  .site-footer__note {
+    margin-block-start: var(--space-4);
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--step-0);
+    color: var(--color-text-inverse-muted);
+  }
+
+  .site-footer__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2) var(--space-4);
+    padding-block: var(--space-5);
+    border-block-start: 1px solid rgb(255 255 255 / 0.12);
+  }
+
+  .site-footer__copyright strong {
+    color: var(--color-text-inverse);
+    font-weight: 650;
+  }
+
+  .site-footer__credit {
+    color: rgb(255 255 255 / 0.45);
+  }
+</style>

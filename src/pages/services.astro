@@ -1,0 +1,112 @@
+---
+import PageLayout from "~/layouts/PageLayout.astro";
+import SectionHeading from "~/components/SectionHeading.astro";
+import ServiceCard from "~/components/ServiceCard.astro";
+import Notice from "~/components/Notice.astro";
+import Icon from "~/components/Icon.astro";
+import CallToAction from "~/components/CallToAction.astro";
+
+import { services, offices } from "~/content/services";
+---
+
+<PageLayout
+  title="Student Life & Services"
+  heading="Student life & services"
+  eyebrow="Student Life"
+  description="Dormitories, food services, clinic, guidance, Pathfinder and Master Guide — the services that support boarding students at Northeast Luzon Adventist College."
+  lead="NELAC is a boarding school. These are the offices and programmes that look after students while they are with us."
+  trail={[{ label: "Student Life & Services" }]}
+>
+  <section class="section" aria-labelledby="services-title">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Services"
+        title="On campus"
+        id="services-title"
+      />
+
+      <ul class="grid grid--cards services">
+        {services.map((service, index) => <ServiceCard service={service} index={index} />)}
+      </ul>
+
+      <Notice tone="pending" title="These pages are still being written" class="services__note">
+        <p>
+          The school has not yet published descriptions for these services. Each
+          one has its own page ready for the text, and the pages will fill in as
+          the information is supplied. In the meantime, the school can answer
+          questions directly — see the <a href="/contact">contact page</a>.
+        </p>
+      </Notice>
+    </div>
+  </section>
+
+  <section class="section section--paper" id="offices" aria-labelledby="offices-title">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Offices"
+        title="Where to go for what"
+        id="offices-title"
+      />
+      <ul class="offices">
+        {
+          offices.map((office, index) => (
+            <li class="office" data-reveal style={`--reveal-delay:${index * 70}ms`}>
+              <h3 class="office__name">{office.name}</h3>
+              <p class="office__text">{office.description}</p>
+              <a class="link-arrow office__link" href={office.href}>
+                Go to {office.name}
+                <Icon name="arrow-right" size={17} />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <CallToAction />
+</PageLayout>
+
+<style>
+  .services,
+  .offices {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  :global(.services__note) {
+    margin-block-start: var(--space-7);
+  }
+
+  .offices {
+    display: grid;
+    gap: var(--space-5);
+  }
+
+  @media (min-width: 48rem) {
+    .offices {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .office {
+    padding-inline-start: var(--space-5);
+    border-inline-start: 2px solid var(--nelac-brass-500);
+  }
+
+  .office__name {
+    font-size: var(--step-2);
+  }
+
+  .office__text {
+    margin-block-start: var(--space-3);
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .office__link {
+    margin-block-start: var(--space-4);
+    font-size: var(--step--1);
+  }
+</style>

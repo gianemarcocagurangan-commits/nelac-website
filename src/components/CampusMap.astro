@@ -1,0 +1,243 @@
+---
+import { contact, site } from "~/content/site";
+import Icon from "./Icon.astro";
+
+/**
+ * Campus location.
+ *
+ * The map is loaded only when the visitor asks for it, so the page makes no
+ * third-party request on load. It is centred on the postal address the school
+ * publishes; the precise campus pin has not been independently verified, and
+ * the caption says so rather than implying an exact location.
+ */
+const query = encodeURIComponent(
+  `${site.name}, ${contact.addressOneLine}`,
+);
+const embedSrc = `https://www.google.com/maps?q=${query}&output=embed`;
+const externalSrc = `https://www.google.com/maps/search/?api=1&query=${query}`;
+const directionsSrc = `https://www.google.com/maps/dir/?api=1&destination=${query}`;
+---
+
+<div class="campus-map" data-map data-embed={embedSrc}>
+  <div class="campus-map__panel">
+    <h3 class="campus-map__title">Find the campus</h3>
+    <address class="campus-map__address">
+      <strong>{site.wordmark.toUpperCase()}</strong><br />
+      {contact.address.line1}<br />
+      {contact.address.line2}<br />
+      {contact.address.country}
+    </address>
+    <p class="campus-map__note">
+      The campus sits on 21 hectares along the national highway, 354 kilometers
+      north of Manila.
+    </p>
+    <p class="campus-map__actions">
+      <a
+        class="campus-map__link"
+        href={externalSrc}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <Icon name="map-pin" size={18} />
+        Open in Google Maps
+        <Icon name="external-link" size={15} />
+      </a>
+      <a
+        class="campus-map__link campus-map__link--muted"
+        href={directionsSrc}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <Icon name="arrow-right" size={18} />
+        Get directions
+        <Icon name="external-link" size={15} />
+      </a>
+    </p>
+  </div>
+
+  <div class="campus-map__frame">
+    <div class="campus-map__placeholder" data-map-placeholder>
+      <div class="campus-map__grid" aria-hidden="true"></div>
+      <div class="campus-map__cta">
+        <Icon name="map-pin" size={28} />
+        <p class="campus-map__cta-text">
+          The interactive map is loaded from Google Maps only when you ask for
+          it, so the page stays fast and private.
+        </p>
+        <button type="button" class="btn" data-map-load>
+          Load the map
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p class="campus-map__disclaimer">
+  The map is centred on the postal address published by the school. The exact
+  campus boundary pin has not been independently verified — please call
+  <a href={`tel:${contact.phoneHref}`}>{contact.phone}</a> if you need directions.
+</p>
+
+<style>
+  .campus-map {
+    display: grid;
+    gap: var(--space-5);
+    align-items: stretch;
+  }
+
+  @media (min-width: 56rem) {
+    .campus-map {
+      grid-template-columns: minmax(18rem, 22rem) 1fr;
+    }
+  }
+
+  .campus-map__panel {
+    padding: var(--space-6);
+    background-color: var(--nelac-green-950);
+    color: var(--color-text-inverse-muted);
+    border-radius: var(--radius-lg);
+  }
+
+  .campus-map__title {
+    font-size: var(--step-2);
+    color: var(--color-text-inverse);
+  }
+
+  .campus-map__address {
+    margin-block-start: var(--space-4);
+    font-style: normal;
+    line-height: 1.8;
+  }
+
+  .campus-map__address strong {
+    color: var(--nelac-brass-300);
+    letter-spacing: 0.06em;
+  }
+
+  .campus-map__note {
+    margin-block-start: var(--space-4);
+    font-size: var(--step--1);
+    line-height: 1.7;
+  }
+
+  .campus-map__actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin-block-start: var(--space-5);
+  }
+
+  .campus-map__link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: 0.7rem 1.1rem;
+    min-height: 2.9rem;
+    border: 1px solid rgb(255 255 255 / 0.25);
+    border-radius: var(--radius-full);
+    color: var(--color-text-inverse);
+    font-size: var(--step--1);
+    font-weight: 600;
+    text-decoration: none;
+    transition:
+      background-color var(--duration) var(--ease-out),
+      border-color var(--duration) var(--ease-out);
+  }
+
+  .campus-map__link:hover {
+    background-color: rgb(255 255 255 / 0.12);
+    border-color: rgb(255 255 255 / 0.6);
+    color: var(--color-text-inverse);
+  }
+
+  .campus-map__link--muted {
+    border-color: transparent;
+    color: var(--color-text-inverse-muted);
+  }
+
+  .campus-map__frame {
+    position: relative;
+    min-height: 20rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background-color: var(--color-surface-alt);
+  }
+
+  .campus-map__frame :global(iframe) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 20rem;
+    border: 0;
+  }
+
+  .campus-map__placeholder {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: var(--space-6);
+  }
+
+  .campus-map__grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--color-border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--color-border) 1px, transparent 1px);
+    background-size: 2.5rem 2.5rem;
+    opacity: 0.55;
+    mask-image: radial-gradient(70% 70% at 50% 50%, #000, transparent);
+  }
+
+  .campus-map__cta {
+    position: relative;
+    max-width: 24rem;
+    text-align: center;
+    color: var(--color-text-muted);
+  }
+
+  .campus-map__cta :global(svg) {
+    margin-inline: auto;
+    color: var(--color-accent);
+  }
+
+  .campus-map__cta-text {
+    margin-block: var(--space-3) var(--space-4);
+    font-size: var(--step--1);
+    line-height: 1.6;
+  }
+
+
+  .campus-map__disclaimer {
+    margin-block-start: var(--space-4);
+    font-size: var(--step--1);
+    color: var(--color-text-subtle);
+  }
+</style>
+
+<script>
+  const map = document.querySelector<HTMLElement>("[data-map]");
+  const loadButton = map?.querySelector<HTMLButtonElement>("[data-map-load]");
+  const placeholder = map?.querySelector<HTMLElement>("[data-map-placeholder]");
+
+  loadButton?.addEventListener("click", () => {
+    const src = map?.dataset.embed;
+    const frame = map?.querySelector<HTMLElement>(".campus-map__frame");
+    if (!src || !frame) return;
+
+    loadButton.disabled = true;
+    loadButton.textContent = "Loading map…";
+
+    const iframe = document.createElement("iframe");
+    iframe.src = src;
+    iframe.loading = "lazy";
+    iframe.title =
+      "Google Maps showing the published address of Northeast Luzon Adventist College";
+    iframe.referrerPolicy = "no-referrer-when-downgrade";
+    iframe.addEventListener("load", () => placeholder?.remove());
+
+    frame.appendChild(iframe);
+  });
+</script>

@@ -1,0 +1,196 @@
+---
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import Icon, { type IconName } from "./Icon.astro";
+
+import elementary from "~/assets/images/departments/elementary.jpg";
+import juniorHigh from "~/assets/images/departments/junior-high.jpg";
+import collegeBuilding from "~/assets/images/departments/arts-and-education.jpg";
+
+/**
+ * The three themes the school itself put forward on its homepage carousel,
+ * presented as cards with the photographs that accompanied them.
+ */
+const pillars: {
+  title: string;
+  icon: IconName;
+  image: ImageMetadata;
+  alt: string;
+  text: string;
+  href: string;
+  linkLabel: string;
+}[] = [
+  {
+    title: "Faith-Based Education",
+    icon: "book-open",
+    image: elementary,
+    alt: "The Elementary Department building at Northeast Luzon Adventist College, with its blue roof and garden frontage",
+    text: "A boarding Seventh-day Adventist institution operated by the North Philippine Union Conference, offering kindergarten to grade 12, technical/vocational courses and college courses.",
+    href: "/about",
+    linkLabel: "About the college",
+  },
+  {
+    title: "Service & Character Building",
+    icon: "users",
+    image: juniorHigh,
+    alt: "The signposted entrance to the Junior High School building at Northeast Luzon Adventist College",
+    text: "Part of a network of more than 7,500 Seventh-day Adventist schools around the world commissioned to train, to win, and to hold the young people of the Church.",
+    href: "/services",
+    linkLabel: "Student life & services",
+  },
+  {
+    title: "Knowledge & Excellence",
+    icon: "graduation-cap",
+    image: collegeBuilding,
+    alt: "The college building at Northeast Luzon Adventist College, seen from the tree-lined walkway",
+    text: "One hundred percent of the first class of education majors passed the Licensure Examination for Teachers, and in March 2017 our graduates placed first and in the regional top ten.",
+    href: "/academics",
+    linkLabel: "Academic departments",
+  },
+];
+
+---
+
+<ul class="pillars">
+  {
+    pillars.map((pillar, index) => (
+      <li class="pillar" data-reveal style={`--reveal-delay:${index * 90}ms`}>
+        <div class="pillar__media">
+          <Image
+            src={pillar.image}
+            alt={pillar.alt}
+            widths={[400, 700, 1000]}
+            sizes="(min-width: 62rem) 32vw, (min-width: 40rem) 46vw, 92vw"
+            loading="lazy"
+            class="pillar__image"
+          />
+          <span class="pillar__icon">
+            <Icon name={pillar.icon} size={22} />
+          </span>
+        </div>
+        <div class="pillar__body">
+          <h3 class="pillar__title">{pillar.title}</h3>
+          <p class="pillar__text">{pillar.text}</p>
+          <a class="pillar__link" href={pillar.href}>
+            {pillar.linkLabel}
+            <Icon name="arrow-right" size={17} />
+          </a>
+        </div>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .pillars {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-5);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (min-width: 44rem) {
+    .pillars {
+      grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+    }
+  }
+
+  .pillar {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition:
+      border-color var(--duration) var(--ease-out),
+      box-shadow var(--duration) var(--ease-out),
+      transform var(--duration) var(--ease-out);
+  }
+
+  .pillar:hover {
+    border-color: var(--nelac-green-200);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-4px);
+  }
+
+  .pillar__media {
+    position: relative;
+    aspect-ratio: 3 / 2;
+    overflow: hidden;
+    background-color: var(--nelac-green-950);
+  }
+
+  :global(.pillar__image) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--duration-slow) var(--ease-out);
+  }
+
+  .pillar:hover :global(.pillar__image) {
+    transform: scale(1.05);
+  }
+
+  .pillar__icon {
+    position: absolute;
+    inset-block-end: var(--space-4);
+    inset-inline-start: var(--space-4);
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: var(--radius-md);
+    background-color: rgb(255 255 255 / 0.94);
+    color: var(--color-primary);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .pillar__body {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    padding: var(--space-5);
+  }
+
+  .pillar__title {
+    font-size: var(--step-2);
+  }
+
+  .pillar__text {
+    flex: 1 1 auto;
+    margin-block-start: var(--space-3);
+    font-size: var(--step--1);
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  .pillar__link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-block-start: var(--space-5);
+    font-size: var(--step--1);
+    font-weight: 650;
+    text-decoration: none;
+    color: var(--color-primary);
+  }
+
+  .pillar__link :global(svg) {
+    transition: transform var(--duration) var(--ease-out);
+  }
+
+  .pillar__link:hover :global(svg) {
+    transform: translateX(3px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pillar:hover,
+    .pillar:hover :global(.pillar__image),
+    .pillar__link:hover :global(svg) {
+      transform: none;
+    }
+  }
+</style>

@@ -1,0 +1,180 @@
+---
+import { Image } from "astro:assets";
+import PageLayout from "~/layouts/PageLayout.astro";
+import SectionHeading from "~/components/SectionHeading.astro";
+import DepartmentCard from "~/components/DepartmentCard.astro";
+import Notice from "~/components/Notice.astro";
+import CallToAction from "~/components/CallToAction.astro";
+import Icon from "~/components/Icon.astro";
+
+import {
+  departments,
+  departmentsHeading,
+  accreditors,
+  accreditationHeading,
+  accreditationStatements,
+  partnerships,
+} from "~/content/academics";
+---
+
+<PageLayout
+  title="Academics"
+  heading="Academics at NELAC"
+  eyebrow="Academics"
+  description="Academic departments and accreditation at Northeast Luzon Adventist College: K2/Elementary, Junior High School, Senior High School, the School of Arts & Education, and Technical Vocational programmes."
+  lead="From kindergarten to college and technical-vocational training, taught within a Seventh-day Adventist understanding of education."
+  trail={[{ label: "Academics" }]}
+>
+  <!-- ======= Departments ======= -->
+  <section class="section" id="departments" aria-labelledby="departments-title">
+    <div class="container">
+      <SectionHeading
+        eyebrow={departmentsHeading.eyebrow}
+        title={departmentsHeading.title}
+        id="departments-title"
+        lead="Five departments serve learners at every stage, on one campus in Mabini, Alicia."
+      />
+
+      <ul class="grid grid--cards departments">
+        {
+          departments.map((department, index) => (
+            <DepartmentCard department={department} index={index} />
+          ))
+        }
+      </ul>
+
+      <Notice tone="pending" title="Programme details" class="departments__note">
+        <p>
+          Detailed course listings, subject offerings and admission
+          requirements for each department have not yet been published on this
+          website. Please contact the <a href="/admissions">Admission and
+          Records Office</a> for the current information.
+        </p>
+      </Notice>
+    </div>
+  </section>
+
+  <!-- ======= Accreditation ======= -->
+  <section
+    class="section section--paper"
+    id="accreditation"
+    aria-labelledby="accreditation-title"
+  >
+    <div class="container">
+      <SectionHeading
+        eyebrow={accreditationHeading.eyebrow}
+        title={accreditationHeading.title}
+        id="accreditation-title"
+      />
+
+      <div class="accreditation">
+        <div class="accreditation__statements prose">
+          {accreditationStatements.map((statement) => <p set:html={statement} />)}
+        </div>
+
+        <ul class="accreditation__logos" aria-label="Accrediting agencies">
+          {
+            accreditors.map((accreditor, index) => (
+              <li
+                class="accreditation__logo"
+                data-reveal
+                style={`--reveal-delay:${index * 80}ms`}
+              >
+                <Image
+                  src={accreditor.logo}
+                  alt={accreditor.alt}
+                  widths={[240, 420]}
+                  sizes="(min-width: 40rem) 14rem, 40vw"
+                  loading="lazy"
+                />
+                <span class="visually-hidden">{accreditor.name}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= Partnerships ======= -->
+  <section class="section section--alt" aria-labelledby="partners-title">
+    <div class="container container--narrow">
+      <SectionHeading
+        eyebrow="Partnership"
+        title="TESDA and technical assessment"
+        id="partners-title"
+      />
+      <div class="prose">
+        {partnerships.map((paragraph) => <p set:html={paragraph} />)}
+      </div>
+      <p class="partners__link">
+        <a class="link-arrow" href="/finance">
+          See financial information for each department
+          <Icon name="arrow-right" size={18} />
+        </a>
+      </p>
+    </div>
+  </section>
+
+  <CallToAction />
+</PageLayout>
+
+<style>
+  .departments {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  :global(.departments__note) {
+    margin-block-start: var(--space-7);
+  }
+
+  .accreditation {
+    display: grid;
+    gap: var(--space-7);
+    align-items: center;
+  }
+
+  @media (min-width: 56rem) {
+    .accreditation {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-9);
+    }
+  }
+
+  .accreditation__logos {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (min-width: 30rem) {
+    .accreditation__logos {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .accreditation__logo {
+    display: grid;
+    place-items: center;
+    padding: var(--space-4);
+    aspect-ratio: 4 / 3;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-surface);
+  }
+
+  .accreditation__logo :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .partners__link {
+    margin-block-start: var(--space-6);
+  }
+</style>

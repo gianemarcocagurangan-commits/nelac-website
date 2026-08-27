@@ -1,0 +1,350 @@
+---
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import Icon from "./Icon.astro";
+
+export interface GalleryItem {
+  image: ImageMetadata;
+  alt: string;
+  caption?: string;
+}
+
+interface Props {
+  items: GalleryItem[];
+  id?: string;
+  columns?: 2 | 3;
+}
+
+const { items, id = "gallery", columns = 3 } = Astro.props;
+---
+
+<div class="gallery" data-gallery id={id} style={`--cols:${columns}`}>
+  <ul class="gallery__grid">
+    {
+      items.map((item, index) => (
+        <li class="gallery__item" data-reveal style={`--reveal-delay:${index * 60}ms`}>
+          <button
+            type="button"
+            class="gallery__button"
+            data-gallery-open={index}
+            aria-haspopup="dialog"
+          >
+            <Image
+              src={item.image}
+              alt={item.alt}
+              widths={[320, 560, 900]}
+              sizes="(min-width: 62rem) 30vw, (min-width: 40rem) 45vw, 92vw"
+              loading="lazy"
+              class="gallery__image"
+            />
+            <span class="gallery__zoom" aria-hidden="true">
+              <Icon name="search" size={18} />
+            </span>
+            <span class="visually-hidden">View larger: {item.alt}</span>
+          </button>
+          {item.caption && <p class="gallery__caption">{item.caption}</p>}
+        </li>
+      ))
+    }
+  </ul>
+
+  <dialog class="lightbox" data-gallery-dialog aria-label="Photo viewer">
+    <figure class="lightbox__figure">
+      <img class="lightbox__image" data-gallery-image alt="" />
+      <figcaption class="lightbox__caption" data-gallery-caption></figcaption>
+    </figure>
+
+    <button
+      type="button"
+      class="lightbox__close"
+      data-gallery-close
+      aria-label="Close photo viewer"
+    >
+      <Icon name="x" size={22} />
+    </button>
+    <button
+      type="button"
+      class="lightbox__nav lightbox__nav--prev"
+      data-gallery-prev
+      aria-label="Previous photo"
+    >
+      <Icon name="chevron-right" size={24} />
+    </button>
+    <button
+      type="button"
+      class="lightbox__nav lightbox__nav--next"
+      data-gallery-next
+      aria-label="Next photo"
+    >
+      <Icon name="chevron-right" size={24} />
+    </button>
+    <p class="lightbox__counter" data-gallery-counter aria-live="polite"></p>
+  </dialog>
+
+  <script
+    type="application/json"
+    data-gallery-data
+    set:html={JSON.stringify(
+      items.map((item) => ({
+        src: item.image.src,
+        width: item.image.width,
+        height: item.image.height,
+        alt: item.alt,
+        caption: item.caption ?? "",
+      })),
+    )}
+    is:inline
+  />
+</div>
+
+<style>
+  .gallery__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (min-width: 40rem) {
+    .gallery__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 62rem) {
+    .gallery__grid {
+      grid-template-columns: repeat(var(--cols), 1fr);
+    }
+  }
+
+  .gallery__button {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 0;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background-color: var(--color-surface-alt);
+  }
+
+  :global(.gallery__image) {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    transition: transform var(--duration-slow) var(--ease-out);
+  }
+
+  .gallery__button:hover :global(.gallery__image) {
+    transform: scale(1.04);
+  }
+
+  .gallery__zoom {
+    position: absolute;
+    inset-block-end: var(--space-3);
+    inset-inline-end: var(--space-3);
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: var(--radius-full);
+    background-color: rgb(6 35 26 / 0.72);
+    color: #fff;
+    opacity: 0;
+    transition: opacity var(--duration) var(--ease-out);
+  }
+
+  .gallery__button:hover .gallery__zoom,
+  .gallery__button:focus-visible .gallery__zoom {
+    opacity: 1;
+  }
+
+  .gallery__caption {
+    margin-block-start: var(--space-2);
+    font-size: var(--step--1);
+    color: var(--color-text-muted);
+  }
+
+  /* ---------- Lightbox ---------- */
+  .lightbox {
+    width: min(64rem, calc(100vw - 2rem));
+    max-width: none;
+    max-height: calc(100vh - 2rem);
+    padding: 0;
+    border: none;
+    background: transparent;
+    overflow: visible;
+  }
+
+  .lightbox::backdrop {
+    background-color: rgb(6 35 26 / 0.88);
+  }
+
+  .lightbox__figure {
+    margin: 0;
+  }
+
+  .lightbox__image {
+    width: 100%;
+    max-height: min(78vh, 46rem);
+    object-fit: contain;
+    border-radius: var(--radius-md);
+    background-color: #06231a;
+  }
+
+  .lightbox__caption {
+    margin-block-start: var(--space-3);
+    text-align: center;
+    font-size: var(--step--1);
+    color: rgb(255 255 255 / 0.85);
+  }
+
+  .lightbox__caption:empty {
+    display: none;
+  }
+
+  .lightbox__close,
+  .lightbox__nav {
+    position: absolute;
+    display: grid;
+    place-items: center;
+    width: 2.9rem;
+    height: 2.9rem;
+    border: 1px solid rgb(255 255 255 / 0.28);
+    border-radius: var(--radius-full);
+    background-color: rgb(6 35 26 / 0.6);
+    color: #fff;
+    transition: background-color var(--duration) var(--ease-out);
+  }
+
+  .lightbox__close:hover,
+  .lightbox__nav:hover {
+    background-color: rgb(6 35 26 / 0.95);
+  }
+
+  .lightbox__close {
+    inset-block-start: -1.1rem;
+    inset-inline-end: -0.6rem;
+  }
+
+  .lightbox__nav {
+    inset-block-start: 50%;
+    transform: translateY(-50%);
+  }
+
+  .lightbox__nav--prev {
+    inset-inline-start: -0.6rem;
+  }
+
+  .lightbox__nav--prev :global(svg) {
+    transform: rotate(180deg);
+  }
+
+  .lightbox__nav--next {
+    inset-inline-end: -0.6rem;
+  }
+
+  .lightbox__counter {
+    margin-block-start: var(--space-2);
+    text-align: center;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgb(255 255 255 / 0.6);
+  }
+
+  @media (max-width: 48rem) {
+    .lightbox__close {
+      inset-block-start: -1rem;
+      inset-inline-end: 0;
+    }
+    .lightbox__nav--prev {
+      inset-inline-start: 0.25rem;
+    }
+    .lightbox__nav--next {
+      inset-inline-end: 0.25rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gallery__button:hover :global(.gallery__image) {
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  interface Slide {
+    src: string;
+    width: number;
+    height: number;
+    alt: string;
+    caption: string;
+  }
+
+  document.querySelectorAll<HTMLElement>("[data-gallery]").forEach((gallery) => {
+    const dataEl = gallery.querySelector("[data-gallery-data]");
+    const dialog = gallery.querySelector<HTMLDialogElement>(
+      "[data-gallery-dialog]",
+    );
+    if (!dataEl?.textContent || !dialog) return;
+
+    const slides: Slide[] = JSON.parse(dataEl.textContent);
+    const image = dialog.querySelector<HTMLImageElement>("[data-gallery-image]")!;
+    const caption = dialog.querySelector<HTMLElement>("[data-gallery-caption]")!;
+    const counter = dialog.querySelector<HTMLElement>("[data-gallery-counter]")!;
+    let index = 0;
+
+    const render = (next: number) => {
+      index = (next + slides.length) % slides.length;
+      const slide = slides[index]!;
+      image.src = slide.src;
+      image.alt = slide.alt;
+      image.width = slide.width;
+      image.height = slide.height;
+      caption.textContent = slide.caption;
+      counter.textContent = `${index + 1} of ${slides.length}`;
+    };
+
+    gallery
+      .querySelectorAll<HTMLButtonElement>("[data-gallery-open]")
+      .forEach((button) =>
+        button.addEventListener("click", () => {
+          render(Number(button.dataset.galleryOpen));
+          dialog.showModal();
+        }),
+      );
+
+    dialog
+      .querySelector("[data-gallery-close]")
+      ?.addEventListener("click", () => dialog.close());
+    dialog
+      .querySelector("[data-gallery-prev]")
+      ?.addEventListener("click", () => render(index - 1));
+    dialog
+      .querySelector("[data-gallery-next]")
+      ?.addEventListener("click", () => render(index + 1));
+
+    dialog.addEventListener("click", (event) => {
+      if (event.target === dialog) dialog.close();
+    });
+
+    dialog.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        render(index + 1);
+      } else if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        render(index - 1);
+      }
+    });
+
+    // Only one photo? Hide the navigation entirely.
+    if (slides.length < 2) {
+      dialog
+        .querySelectorAll<HTMLElement>(".lightbox__nav, .lightbox__counter")
+        .forEach((el) => (el.hidden = true));
+    }
+  });
+</script>

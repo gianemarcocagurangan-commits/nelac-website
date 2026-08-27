@@ -1,0 +1,172 @@
+---
+import PageLayout from "~/layouts/PageLayout.astro";
+import NewsItem from "~/components/NewsItem.astro";
+import Notice from "~/components/Notice.astro";
+import CallToAction from "~/components/CallToAction.astro";
+
+import { news } from "~/content/news";
+import { social } from "~/content/site";
+
+const sorted = [...news].sort((a, b) => b.date.localeCompare(a.date));
+const categories = [...new Set(sorted.map((item) => item.category))];
+---
+
+<PageLayout
+  title="News & Announcements"
+  heading="News & announcements"
+  eyebrow="News"
+  description="Announcements from Northeast Luzon Adventist College — research conferences, Licensure Examination for Teachers results and school news."
+  lead="Announcements the college has published, with the text of each poster transcribed so it can be read on any device."
+  trail={[{ label: "News & Announcements" }]}
+>
+  <section class="section">
+    <div class="container">
+      {
+        sorted.length > 0 ? (
+          <>
+            <nav class="news-filter" aria-label="Filter announcements">
+              <button type="button" class="news-filter__chip is-active" data-filter="all">
+                All
+                <span class="news-filter__count">{sorted.length}</span>
+              </button>
+              {categories.map((category) => (
+                <button type="button" class="news-filter__chip" data-filter={category}>
+                  {category}
+                  <span class="news-filter__count">
+                    {sorted.filter((item) => item.category === category).length}
+                  </span>
+                </button>
+              ))}
+            </nav>
+
+            <div class="news-list" data-news-list>
+              {sorted.map((item, index) => (
+                <div data-category={item.category}>
+                  <NewsItem item={item} index={index} />
+                </div>
+              ))}
+            </div>
+
+            <p class="news-empty" data-news-empty hidden>
+              No announcements in this category.
+            </p>
+          </>
+        ) : (
+          <Notice tone="info" title="No announcements yet">
+            There are no announcements published at the moment. Please check
+            back, or follow the school on Facebook.
+          </Notice>
+        )
+      }
+
+      <Notice tone="info" title="More from NELAC" class="news-note">
+        Only announcements published by the school appear here. For day-to-day
+        updates, visit the college&rsquo;s
+        {" "}
+        <a href={social[0].href} target="_blank" rel="noopener noreferrer">
+          Facebook page</a>.
+      </Notice>
+    </div>
+  </section>
+
+  <CallToAction />
+</PageLayout>
+
+<style>
+  .news-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-block-end: var(--space-7);
+  }
+
+  .news-filter__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: 0.45rem 1rem;
+    min-height: 2.4rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    background-color: var(--color-surface);
+    font-size: var(--step--1);
+    font-weight: 600;
+    color: var(--color-text-muted);
+    transition:
+      background-color var(--duration) var(--ease-out),
+      border-color var(--duration) var(--ease-out),
+      color var(--duration) var(--ease-out);
+  }
+
+  .news-filter__chip:hover {
+    border-color: var(--nelac-green-200);
+    color: var(--color-primary);
+  }
+
+  .news-filter__chip.is-active {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--color-text-inverse);
+  }
+
+  .news-filter__count {
+    padding: 0 0.4rem;
+    border-radius: var(--radius-full);
+    background-color: var(--color-surface-alt);
+    color: var(--color-text-subtle);
+    font-size: 0.72rem;
+  }
+
+  .news-filter__chip.is-active .news-filter__count {
+    background-color: rgb(255 255 255 / 0.18);
+    color: #fff;
+  }
+
+  .news-empty {
+    padding: var(--space-8);
+    border: 1px dashed var(--color-border-strong);
+    border-radius: var(--radius-lg);
+    text-align: center;
+    color: var(--color-text-subtle);
+  }
+
+  .news-empty[hidden] {
+    display: none;
+  }
+
+  :global(.news-note) {
+    margin-block-start: var(--space-7);
+  }
+</style>
+
+<script>
+  const chips = Array.from(
+    document.querySelectorAll<HTMLButtonElement>("[data-filter]"),
+  );
+  const list = document.querySelector<HTMLElement>("[data-news-list]");
+  const empty = document.querySelector<HTMLElement>("[data-news-empty]");
+
+  if (chips.length && list) {
+    const items = Array.from(
+      list.querySelectorAll<HTMLElement>("[data-category]"),
+    );
+
+    chips.forEach((chip) =>
+      chip.addEventListener("click", () => {
+        const filter = chip.dataset.filter;
+        chips.forEach((other) =>
+          other.classList.toggle("is-active", other === chip),
+        );
+
+        let shown = 0;
+        items.forEach((item) => {
+          const match = filter === "all" || item.dataset.category === filter;
+          item.hidden = !match;
+          if (match) shown += 1;
+        });
+
+        if (empty) empty.hidden = shown > 0;
+      }),
+    );
+  }
+</script>

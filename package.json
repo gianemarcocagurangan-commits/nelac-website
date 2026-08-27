@@ -1,0 +1,23 @@
+{
+  "name": "nelac-website",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Official website of Northeast Luzon Adventist College (NELAC), Mabini, Alicia, Isabela, Philippines.",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@astrojs/sitemap": "^3.6.0",
+    "@fontsource-variable/inter": "^5.2.6",
+    "@fontsource-variable/source-serif-4": "^5.2.5",
+    "astro": "^5.14.1",
+    "sharp": "^0.34.4",
+    "typescript": "^5.9.2"
+  }
+}

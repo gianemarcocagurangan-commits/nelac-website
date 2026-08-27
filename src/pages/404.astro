@@ -1,0 +1,142 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Icon from "~/components/Icon.astro";
+import { navigation, contact } from "~/content/site";
+---
+
+<BaseLayout
+  title="Page not found"
+  description="The page you were looking for could not be found on the Northeast Luzon Adventist College website."
+  noindex
+>
+  <section class="notfound">
+    <div class="container notfound__inner">
+      <p class="notfound__code">404</p>
+      <h1 class="notfound__title">We couldn&rsquo;t find that page</h1>
+      <p class="notfound__text">
+        The page may have been moved or renamed when this website was rebuilt.
+        Here is where most people are heading.
+      </p>
+
+      <div class="notfound__search">
+        <button type="button" class="btn btn--lg" data-search-open>
+          <Icon name="search" size={19} />
+          Search the website
+        </button>
+      </div>
+
+      <nav class="notfound__nav" aria-label="Main sections">
+        <ul>
+          {
+            navigation
+              .filter((item) => item.href !== "/")
+              .map((item) => (
+                <li>
+                  <a href={item.href}>
+                    {item.label}
+                    <Icon name="arrow-right" size={16} />
+                  </a>
+                </li>
+              ))
+          }
+        </ul>
+      </nav>
+
+      <p class="notfound__help">
+        Still stuck? Email
+        <a href={`mailto:${contact.email}`}>{contact.email}</a>
+        or call <a href={`tel:${contact.phoneHref}`}>{contact.phone}</a>.
+      </p>
+
+      <p>
+        <a class="link-arrow" href="/">
+          Back to the homepage
+          <Icon name="arrow-right" size={18} />
+        </a>
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .notfound {
+    display: grid;
+    place-items: center;
+    min-height: min(70svh, 40rem);
+    padding-block: var(--section-y);
+    background-image: radial-gradient(
+      70% 60% at 50% 0%,
+      var(--nelac-green-50),
+      transparent 70%
+    );
+  }
+
+  .notfound__inner {
+    max-width: 44rem;
+    text-align: center;
+  }
+
+  .notfound__code {
+    font-family: var(--font-display);
+    font-size: clamp(4rem, 3rem + 8vw, 8rem);
+    font-weight: 600;
+    line-height: 1;
+    color: var(--nelac-green-100);
+    letter-spacing: -0.03em;
+  }
+
+  .notfound__title {
+    margin-block-start: var(--space-2);
+    font-size: var(--step-4);
+  }
+
+  .notfound__text {
+    max-width: 46ch;
+    margin: var(--space-4) auto 0;
+    color: var(--color-text-muted);
+  }
+
+  .notfound__search {
+    margin-block-start: var(--space-6);
+  }
+
+
+  .notfound__nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-2);
+    margin: var(--space-7) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .notfound__nav a {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: 0.5rem 1rem;
+    min-height: 2.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    background-color: var(--color-surface);
+    font-size: var(--step--1);
+    font-weight: 550;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition:
+      border-color var(--duration) var(--ease-out),
+      color var(--duration) var(--ease-out);
+  }
+
+  .notfound__nav a:hover {
+    border-color: var(--nelac-green-200);
+    color: var(--color-primary);
+  }
+
+  .notfound__help {
+    margin-block: var(--space-7) var(--space-5);
+    font-size: var(--step--1);
+    color: var(--color-text-subtle);
+  }
+</style>

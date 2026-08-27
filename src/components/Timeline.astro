@@ -1,0 +1,238 @@
+---
+import { timeline } from "~/content/history";
+
+/**
+ * Interactive history timeline.
+ * Every entry comes from src/content/history.ts, which preserves the school's
+ * own account. The decade chips scroll to the first milestone of that decade.
+ */
+const decadeOf = (year: string): string => {
+  const match = year.match(/\d{4}/);
+  if (!match) return "";
+  return `${match[0].slice(0, 3)}0s`;
+};
+
+const decades = [...new Set(timeline.map((item) => decadeOf(item.year)))];
+const firstOfDecade = new Map<string, number>();
+timeline.forEach((item, index) => {
+  const decade = decadeOf(item.year);
+  if (!firstOfDecade.has(decade)) firstOfDecade.set(decade, index);
+});
+---
+
+<div class="timeline" data-timeline>
+  <div class="timeline__nav" role="group" aria-label="Jump to a decade">
+    {
+      decades.map((decade) => (
+        <button
+          type="button"
+          class="timeline__chip"
+          data-timeline-jump={`milestone-${firstOfDecade.get(decade)}`}
+        >
+          {decade}
+        </button>
+      ))
+    }
+  </div>
+
+  <ol class="timeline__list">
+    {
+      timeline.map((milestone, index) => (
+        <li
+          class="timeline__item"
+          id={`milestone-${index}`}
+          data-reveal
+          style={`--reveal-delay:${Math.min(index, 4) * 60}ms`}
+        >
+          <div class="timeline__marker" aria-hidden="true" />
+          <p class="timeline__year">{milestone.year}</p>
+          <div class="timeline__card">
+            <h3 class="timeline__title">{milestone.title}</h3>
+            <p class="timeline__text" set:html={milestone.description} />
+          </div>
+        </li>
+      ))
+    }
+  </ol>
+</div>
+
+<style>
+  .timeline {
+    --rail: 0.75rem;
+  }
+
+  .timeline__nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-block-end: var(--space-7);
+  }
+
+  .timeline__chip {
+    padding: 0.4rem 0.9rem;
+    min-height: 2.25rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    background-color: var(--color-surface);
+    font-size: var(--step--1);
+    font-weight: 600;
+    color: var(--color-text-muted);
+    transition:
+      background-color var(--duration) var(--ease-out),
+      border-color var(--duration) var(--ease-out),
+      color var(--duration) var(--ease-out);
+  }
+
+  .timeline__chip:hover,
+  .timeline__chip.is-current {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--color-text-inverse);
+  }
+
+  .timeline__list {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* The rail runs behind every marker. */
+  .timeline__list::before {
+    content: "";
+    position: absolute;
+    inset-block: 0.6rem 2rem;
+    inset-inline-start: var(--rail);
+    width: 2px;
+    background: linear-gradient(
+      to bottom,
+      var(--nelac-green-200),
+      var(--nelac-green-100) 70%,
+      transparent
+    );
+  }
+
+  .timeline__item {
+    position: relative;
+    padding-inline-start: calc(var(--rail) + 1.75rem);
+    padding-block-end: var(--space-7);
+    scroll-margin-top: calc(var(--header-height) + 5rem);
+  }
+
+  .timeline__marker {
+    position: absolute;
+    inset-block-start: 0.45rem;
+    inset-inline-start: calc(var(--rail) - 0.4rem);
+    width: 0.9rem;
+    height: 0.9rem;
+    border: 2px solid var(--color-surface);
+    border-radius: var(--radius-full);
+    background-color: var(--nelac-brass-500);
+    box-shadow: 0 0 0 2px var(--nelac-brass-200);
+  }
+
+  .timeline__year {
+    font-family: var(--font-sans);
+    font-size: var(--step--1);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+
+  .timeline__card {
+    margin-block-start: var(--space-2);
+  }
+
+  .timeline__title {
+    font-size: var(--step-2);
+  }
+
+  .timeline__text {
+    max-width: 62ch;
+    margin-block-start: var(--space-2);
+    line-height: 1.7;
+    color: var(--color-text-muted);
+  }
+
+  @media (min-width: 56rem) {
+    .timeline {
+      --rail: 7.5rem;
+    }
+
+    .timeline__item {
+      padding-inline-start: calc(var(--rail) + 2.5rem);
+    }
+
+    .timeline__year {
+      position: absolute;
+      inset-block-start: 0.15rem;
+      inset-inline-start: 0;
+      width: 6.5rem;
+      text-align: end;
+      font-size: var(--step-0);
+    }
+
+    .timeline__card {
+      margin-block-start: 0;
+    }
+  }
+</style>
+
+<script>
+  const root = document.querySelector<HTMLElement>("[data-timeline]");
+
+  if (root) {
+    const chips = Array.from(
+      root.querySelectorAll<HTMLButtonElement>("[data-timeline-jump]"),
+    );
+
+    chips.forEach((chip) => {
+      chip.addEventListener("click", () => {
+        const target = document.getElementById(
+          chip.dataset.timelineJump ?? "",
+        );
+        if (!target) return;
+        const reduced = window.matchMedia(
+          "(prefers-reduced-motion: reduce)",
+        ).matches;
+        target.scrollIntoView({
+          behavior: reduced ? "auto" : "smooth",
+          block: "start",
+        });
+      });
+    });
+
+    // Highlight the decade the reader is currently looking at.
+    const items = Array.from(
+      root.querySelectorAll<HTMLElement>(".timeline__item"),
+    );
+
+    if ("IntersectionObserver" in window && items.length) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          const visible = entries
+            .filter((entry) => entry.isIntersecting)
+            .sort(
+              (a, b) =>
+                a.boundingClientRect.top - b.boundingClientRect.top,
+            )[0];
+          if (!visible) return;
+
+          const year =
+            visible.target.querySelector(".timeline__year")?.textContent ?? "";
+          const match = year.match(/\d{4}/);
+          if (!match) return;
+          const decade = `${match[0].slice(0, 3)}0s`;
+
+          chips.forEach((chip) =>
+            chip.classList.toggle("is-current", chip.textContent === decade),
+          );
+        },
+        { rootMargin: "-20% 0px -65% 0px" },
+      );
+
+      items.forEach((item) => observer.observe(item));
+    }
+  }
+</script>

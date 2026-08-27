@@ -1,0 +1,277 @@
+---
+import PageLayout from "~/layouts/PageLayout.astro";
+import SectionHeading from "~/components/SectionHeading.astro";
+import ContactForm from "~/components/ContactForm.astro";
+import CampusMap from "~/components/CampusMap.astro";
+import Notice from "~/components/Notice.astro";
+import Icon from "~/components/Icon.astro";
+
+import { contact, site, social } from "~/content/site";
+import { offices } from "~/content/services";
+---
+
+<PageLayout
+  title="Contact"
+  heading="Contact Northeast Luzon Adventist College"
+  eyebrow="Contact"
+  description="Contact Northeast Luzon Adventist College: H26, Maharlika Highway, Brgy. Mabini, Alicia, Isabela, Philippines. Email nelac1948@gmail.com or call 09661703852."
+  lead="Questions about enrolment, fees, student services or employment? Here is how to reach us."
+  trail={[{ label: "Contact" }]}
+>
+  <!-- ======= Contact details ======= -->
+  <section class="section" aria-labelledby="details-title">
+    <div class="container contact-grid">
+      <div>
+        <SectionHeading
+          eyebrow="Get in touch"
+          title="Contact details"
+          id="details-title"
+        />
+
+        <ul class="contact-list">
+          <li class="contact-item">
+            <span class="contact-item__icon"><Icon name="map-pin" size={20} /></span>
+            <div>
+              <h3 class="contact-item__label">Address</h3>
+              <address class="contact-item__value">
+                <strong>{site.wordmark.toUpperCase()}</strong><br />
+                {contact.address.line1}<br />
+                {contact.address.line2}<br />
+                {contact.address.country}
+              </address>
+            </div>
+          </li>
+
+          <li class="contact-item">
+            <span class="contact-item__icon"><Icon name="mail" size={20} /></span>
+            <div>
+              <h3 class="contact-item__label">Email</h3>
+              <p class="contact-item__value">
+                <a href={`mailto:${contact.email}`}>{contact.email}</a>
+              </p>
+            </div>
+          </li>
+
+          <li class="contact-item">
+            <span class="contact-item__icon"><Icon name="phone" size={20} /></span>
+            <div>
+              <h3 class="contact-item__label">Contact number</h3>
+              <p class="contact-item__value">
+                <a href={`tel:${contact.phoneHref}`}>{contact.phone}</a>
+              </p>
+            </div>
+          </li>
+
+          <li class="contact-item">
+            <span class="contact-item__icon"><Icon name="globe" size={20} /></span>
+            <div>
+              <h3 class="contact-item__label">Social</h3>
+              <p class="contact-item__value">
+                {
+                  social.map((item) => (
+                    <a href={item.href} target="_blank" rel="noopener noreferrer">
+                      {item.label}
+                      <Icon name="external-link" size={14} />
+                    </a>
+                  ))
+                }
+              </p>
+            </div>
+          </li>
+        </ul>
+
+        <div class="contact-offices">
+          <h3 class="contact-offices__title">Which office do you need?</h3>
+          <ul>
+            {
+              offices.map((office) => (
+                <li>
+                  <a href={office.href}>
+                    {office.name}
+                    <Icon name="chevron-right" size={16} />
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+          <Notice tone="pending" class="contact-offices__note">
+            The school publishes one email address and one contact number for
+            all enquiries. Direct lines for individual offices have not been
+            published.
+          </Notice>
+        </div>
+      </div>
+
+      <!-- ======= Form ======= -->
+      <div class="contact-form-panel" id="message">
+        <SectionHeading eyebrow="Message" title="Send us a message" as="h2" />
+        <ContactForm />
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= Job vacancy ======= -->
+  <section class="section section--paper" id="job-vacancy" aria-labelledby="jobs-title">
+    <div class="container container--narrow">
+      <SectionHeading
+        eyebrow="Careers"
+        title="Job vacancy enquiries"
+        id="jobs-title"
+      />
+      <p class="jobs-text">
+        The previous website listed &ldquo;Job Vacancy&rdquo; among its services but did
+        not publish any openings or an application procedure. Until vacancies
+        are posted here, please send employment enquiries to the school using
+        the details above and choose <strong>Job Vacancy</strong> as the subject
+        of your message.
+      </p>
+      <p>
+        <a class="link-arrow" href="#message">
+          Write to the school
+          <Icon name="arrow-right" size={18} />
+        </a>
+      </p>
+    </div>
+  </section>
+
+  <!-- ======= Map ======= -->
+  <section class="section section--alt" id="map" aria-labelledby="map-title">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Location"
+        title="Visit the campus"
+        id="map-title"
+      />
+      <CampusMap />
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  .contact-grid {
+    display: grid;
+    gap: var(--space-8);
+    align-items: start;
+  }
+
+  @media (min-width: 64rem) {
+    .contact-grid {
+      grid-template-columns: minmax(0, 20rem) minmax(0, 1fr);
+      gap: var(--space-9);
+    }
+  }
+
+  .contact-list {
+    display: grid;
+    gap: var(--space-5);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .contact-item {
+    display: flex;
+    gap: var(--space-4);
+  }
+
+  .contact-item__icon {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: var(--radius-md);
+    background-color: var(--nelac-green-50);
+    color: var(--color-primary);
+  }
+
+  .contact-item__label {
+    font-family: var(--font-sans);
+    font-size: 0.78rem;
+    font-weight: 650;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--color-text-subtle);
+  }
+
+  .contact-item__value {
+    margin-block-start: var(--space-2);
+    font-style: normal;
+    line-height: 1.7;
+  }
+
+  .contact-item__value strong {
+    letter-spacing: 0.05em;
+  }
+
+  .contact-item__value a {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-weight: 550;
+  }
+
+  .contact-offices {
+    margin-block-start: var(--space-7);
+    padding: var(--space-5);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background-color: var(--color-surface);
+  }
+
+  .contact-offices__title {
+    font-family: var(--font-sans);
+    font-size: var(--step--1);
+    font-weight: 650;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-text-subtle);
+  }
+
+  .contact-offices ul {
+    margin: var(--space-4) 0 var(--space-5);
+    padding: 0;
+    list-style: none;
+  }
+
+  .contact-offices li a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding-block: 0.7rem;
+    border-block-end: 1px solid var(--color-border);
+    font-size: var(--step--1);
+    font-weight: 550;
+    color: var(--color-text-muted);
+    text-decoration: none;
+  }
+
+  .contact-offices li:last-child a {
+    border-block-end: none;
+  }
+
+  .contact-offices li a:hover {
+    color: var(--color-primary);
+  }
+
+  .contact-form-panel {
+    padding: var(--space-6);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background-color: var(--color-surface);
+  }
+
+  @media (min-width: 40rem) {
+    .contact-form-panel {
+      padding: var(--space-7);
+    }
+  }
+
+  .jobs-text {
+    max-width: 68ch;
+    line-height: 1.75;
+    color: var(--color-text-muted);
+    margin-block-end: var(--space-5);
+  }
+</style>

@@ -1,0 +1,126 @@
+---
+import Icon, { type IconName } from "./Icon.astro";
+import type { Service } from "~/content/services";
+
+interface Props {
+  service: Service;
+  index?: number;
+}
+
+const { service, index = 0 } = Astro.props;
+---
+
+<li class="service" data-reveal style={`--reveal-delay:${index * 60}ms`}>
+  <a class="service__link" href={`/services/${service.slug}`}>
+    <span class="service__icon">
+      <Icon name={service.icon as IconName} size={24} />
+    </span>
+    <h3 class="service__name">{service.name}</h3>
+    <p class="service__summary">{service.summary}</p>
+    <span class="service__footer">
+      {
+        service.status === "pending" ? (
+          <span class="service__badge">Details coming soon</span>
+        ) : (
+          <span class="service__badge service__badge--live">Learn more</span>
+        )
+      }
+      <Icon name="arrow-right" size={18} class="service__arrow" />
+    </span>
+  </a>
+</li>
+
+<style>
+  .service {
+    display: flex;
+  }
+
+  .service__link {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: var(--space-5);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    color: inherit;
+    text-decoration: none;
+    transition:
+      border-color var(--duration) var(--ease-out),
+      box-shadow var(--duration) var(--ease-out),
+      transform var(--duration) var(--ease-out);
+  }
+
+  .service__link:hover {
+    border-color: var(--nelac-green-200);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-3px);
+    color: inherit;
+  }
+
+  .service__icon {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    margin-block-end: var(--space-4);
+    border-radius: var(--radius-md);
+    background-color: var(--nelac-green-50);
+    color: var(--color-primary);
+    transition: background-color var(--duration) var(--ease-out);
+  }
+
+  .service__link:hover .service__icon {
+    background-color: var(--nelac-green-100);
+  }
+
+  .service__name {
+    font-size: var(--step-1);
+  }
+
+  .service__summary {
+    flex: 1 1 auto;
+    margin-block-start: var(--space-2);
+    font-size: var(--step--1);
+    line-height: 1.6;
+    color: var(--color-text-muted);
+  }
+
+  .service__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-block-start: var(--space-5);
+  }
+
+  .service__badge {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-text-subtle);
+  }
+
+  .service__badge--live {
+    color: var(--color-accent);
+  }
+
+  :global(.service__arrow) {
+    color: var(--color-accent);
+    transition: transform var(--duration) var(--ease-out);
+  }
+
+  .service__link:hover :global(.service__arrow) {
+    transform: translateX(3px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .service__link:hover {
+      transform: none;
+    }
+    .service__link:hover :global(.service__arrow) {
+      transform: none;
+    }
+  }
+</style>

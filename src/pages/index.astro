@@ -1,0 +1,266 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Hero from "~/components/Hero.astro";
+import Pillars from "~/components/Pillars.astro";
+import SectionHeading from "~/components/SectionHeading.astro";
+import StatBand from "~/components/StatBand.astro";
+import Timeline from "~/components/Timeline.astro";
+import LeaderCard from "~/components/LeaderCard.astro";
+import ServiceCard from "~/components/ServiceCard.astro";
+import DepartmentCard from "~/components/DepartmentCard.astro";
+import NewsCard from "~/components/NewsCard.astro";
+import CallToAction from "~/components/CallToAction.astro";
+import Icon from "~/components/Icon.astro";
+
+import { site } from "~/content/site";
+import { historyIntro, historyFacts } from "~/content/history";
+import { leaders, leadershipHeading } from "~/content/leadership";
+import { services } from "~/content/services";
+import { departments } from "~/content/academics";
+import { news } from "~/content/news";
+---
+
+<BaseLayout
+  title={site.name}
+  description="Northeast Luzon Adventist College (NELAC) is a boarding Seventh-day Adventist institution in Mabini, Alicia, Isabela, offering kindergarten to grade 12, technical-vocational and college programmes since 1948."
+>
+  <h1 class="visually-hidden">
+    {site.name} &mdash; {site.tagline}
+  </h1>
+
+  <Hero />
+
+  <!-- ======= School highlights ======= -->
+  <section class="section" aria-labelledby="highlights-title">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Why NELAC"
+        title="An education for the whole person"
+        id="highlights-title"
+        lead="Three commitments have shaped this school since 1948 — and they still describe what a NELAC education is for."
+      />
+      <Pillars />
+    </div>
+  </section>
+
+  <!-- ======= About / history preview ======= -->
+  <section class="section section--paper" id="history" aria-labelledby="about-title">
+    <div class="container about-preview">
+      <div class="about-preview__copy">
+        <SectionHeading
+          eyebrow="History"
+          title="NELACOLLEGE History"
+          id="about-title"
+        />
+        <div class="prose prose--dropcap">
+          {historyIntro.slice(0, 3).map((paragraph) => <p set:html={paragraph} />)}
+        </div>
+        <p class="about-preview__actions">
+          <a class="link-arrow" href="/about">
+            Explore the timeline and administration
+            <Icon name="arrow-right" size={18} />
+          </a>
+          <a class="link-arrow link-arrow--muted" href="/history">
+            Read the full history
+            <Icon name="arrow-right" size={18} />
+          </a>
+        </p>
+      </div>
+
+      <aside class="about-preview__facts" aria-label="NELAC at a glance">
+        <h3 class="about-preview__facts-title">At a glance</h3>
+        <StatBand
+          stats={historyFacts}
+          source="Figures as published in the school's official history."
+        />
+      </aside>
+    </div>
+  </section>
+
+  <!-- ======= Timeline ======= -->
+  <section class="section section--alt" id="timeline" aria-labelledby="timeline-title">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Milestones"
+        title="Seventy-five years in the valley"
+        id="timeline-title"
+        lead="From a cogon-roofed classroom in Divisoria to a college campus on the Maharlika Highway."
+      />
+      <Timeline />
+    </div>
+  </section>
+
+  <!-- ======= Departments ======= -->
+  <section class="section" aria-labelledby="departments-title">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Academics"
+        title="Our departments"
+        id="departments-title"
+        lead="NELAC serves learners from kindergarten through senior high school, technical-vocational training and college programmes."
+      />
+      <ul class="grid grid--cards home-departments">
+        {
+          departments
+            .slice(0, 3)
+            .map((department, index) => (
+              <DepartmentCard department={department} index={index} />
+            ))
+        }
+      </ul>
+      <p class="section-more">
+        <a class="link-arrow" href="/academics#departments">
+          See all {departments.length} departments and our accreditation
+          <Icon name="arrow-right" size={18} />
+        </a>
+      </p>
+    </div>
+  </section>
+
+  <!-- ======= Administration ======= -->
+  <section
+    class="section section--paper"
+    id="administration"
+    aria-labelledby="admin-title"
+  >
+    <div class="container">
+      <SectionHeading
+        eyebrow={leadershipHeading.eyebrow}
+        title={leadershipHeading.title}
+        id="admin-title"
+        lead="The officers leading Northeast Luzon Adventist College."
+      />
+      <ul class="grid grid--cards leaders">
+        {
+          leaders.map((leader, index) => (
+            <LeaderCard leader={leader} index={index} />
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- ======= Services ======= -->
+  <section class="section section--alt" aria-labelledby="services-title">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Student Life"
+        title="Services on campus"
+        id="services-title"
+        lead="The offices and programmes that support students through boarding school life."
+      />
+      <ul class="grid grid--cards">
+        {
+          services.map((service, index) => (
+            <ServiceCard service={service} index={index} />
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- ======= News ======= -->
+  <section class="section" aria-labelledby="news-title">
+    <div class="container">
+      <SectionHeading
+        eyebrow="News"
+        title="Latest from NELAC"
+        id="news-title"
+      />
+      {
+        news.length > 0 ? (
+          <div class="home-news">
+            {news.slice(0, 1).map((item) => (
+              <NewsCard item={item} featured />
+            ))}
+          </div>
+        ) : (
+          <p class="section-empty">
+            There are no announcements published at the moment.
+          </p>
+        )
+      }
+      <p class="section-more">
+        <a class="link-arrow" href="/news">
+          All news &amp; announcements
+          <Icon name="arrow-right" size={18} />
+        </a>
+      </p>
+    </div>
+  </section>
+
+  <CallToAction />
+</BaseLayout>
+
+<style>
+  .about-preview {
+    display: grid;
+    gap: var(--space-8);
+    align-items: start;
+  }
+
+  @media (min-width: 62rem) {
+    .about-preview {
+      grid-template-columns: 1.35fr 1fr;
+      gap: var(--space-9);
+    }
+  }
+
+  .about-preview__facts {
+    padding: var(--space-6);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background-color: var(--color-surface-alt);
+  }
+
+  .about-preview__facts-title {
+    margin-block-end: var(--space-5);
+    font-family: var(--font-sans);
+    font-size: var(--step--1);
+    font-weight: 650;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-text-subtle);
+  }
+
+  .about-preview__facts :global(.stat-band__list) {
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 30rem) and (max-width: 61.99rem) {
+    .about-preview__facts :global(.stat-band__list) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .about-preview__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3) var(--space-6);
+    margin-block-start: var(--space-6);
+  }
+
+  .home-departments,
+  .leaders {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .home-news {
+    display: grid;
+    gap: var(--space-5);
+  }
+
+  .section-more {
+    margin-block-start: var(--space-7);
+  }
+
+  .section-empty {
+    padding: var(--space-7);
+    border: 1px dashed var(--color-border-strong);
+    border-radius: var(--radius-lg);
+    text-align: center;
+    color: var(--color-text-subtle);
+  }
+</style>

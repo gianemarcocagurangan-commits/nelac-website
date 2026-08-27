@@ -1,0 +1,76 @@
+---
+import Icon from "./Icon.astro";
+import { contact } from "~/content/site";
+
+interface Props {
+  title?: string;
+  text?: string;
+}
+
+const {
+  title = "Ready to take the next step?",
+  text = "Talk to the Admission and Records Office about enrolling at Northeast Luzon Adventist College.",
+} = Astro.props;
+---
+
+<section class="cta">
+  <div class="container cta__inner" data-reveal>
+    <div class="cta__copy">
+      <h2 class="cta__title">{title}</h2>
+      <p class="cta__text">{text}</p>
+    </div>
+    <div class="cta__actions">
+      <a class="btn btn--lg btn--on-dark" href="/admissions">
+        How to join NELAC
+        <Icon name="arrow-right" size={18} />
+      </a>
+      <a class="btn btn--lg btn--on-dark btn--secondary" href={`tel:${contact.phoneHref}`}>
+        <Icon name="phone" size={18} />
+        {contact.phone}
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta {
+    padding-block: clamp(2.75rem, 2rem + 3.5vw, 5rem);
+    background-color: var(--nelac-green-900);
+    background-image: radial-gradient(
+      110% 140% at 100% 0%,
+      rgb(193 146 44 / 0.28),
+      transparent 58%
+    );
+    color: var(--color-text-inverse);
+  }
+
+  .cta__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-6);
+  }
+
+  .cta__copy {
+    flex: 1 1 22rem;
+  }
+
+  .cta__title {
+    font-size: var(--step-3);
+    color: var(--color-text-inverse);
+  }
+
+  .cta__text {
+    max-width: 46ch;
+    margin-block-start: var(--space-3);
+    color: var(--color-text-inverse-muted);
+  }
+
+  .cta__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+
+</style>

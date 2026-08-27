@@ -1,0 +1,165 @@
+---
+import "~/styles/fonts.css";
+import "~/styles/global.css";
+
+import Header from "~/components/Header.astro";
+import Footer from "~/components/Footer.astro";
+import BackToTop from "~/components/BackToTop.astro";
+import { site, contact, social } from "~/content/site";
+
+interface Props {
+  title: string;
+  description: string;
+  /** Path to an OG image in /public, or omit for the default. */
+  ogImage?: string;
+  /** Set to true on pages that should not be indexed. */
+  noindex?: boolean;
+  bodyClass?: string;
+}
+
+const {
+  title,
+  description,
+  ogImage = "/og-image.jpg",
+  noindex = false,
+  bodyClass,
+} = Astro.props;
+
+const pageTitle =
+  title === site.name ? site.name : `${title} | ${site.shortName}`;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? site.url).href;
+const ogImageUrl = new URL(ogImage, Astro.site ?? site.url).href;
+
+/** Organisation structured data — only facts published by the school. */
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CollegeOrUniversity",
+  name: site.name,
+  legalName: site.legalName,
+  alternateName: [site.registeredName, site.registeredAcronym, site.shortName],
+  url: site.url,
+  description: site.description,
+  foundingDate: String(site.foundedYear),
+  slogan: site.tagline,
+  email: contact.email,
+  telephone: contact.phone,
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: contact.address.line1,
+    addressLocality: "Alicia",
+    addressRegion: "Isabela",
+    addressCountry: "PH",
+  },
+  sameAs: social.map((item) => item.href),
+};
+---
+
+<!doctype html>
+<html lang="en-PH" class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+
+    <link rel="icon" href="/favicon.png" type="image/png" />
+    <link rel="apple-touch-icon" href="/favicon.png" />
+    <meta name="theme-color" content="#0b3d2e" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:locale" content={site.locale} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+
+    <link
+      rel="preload"
+      href="/fonts/inter-latin-wght-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/source-serif-4-latin-wght-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <script is:inline>
+      // Flag JS availability before first paint so no-JS fallbacks are correct.
+      document.documentElement.classList.remove("no-js");
+    </script>
+
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify(jsonLd)}
+      is:inline
+    />
+    <slot name="head" />
+  </head>
+
+  <body class={bodyClass}>
+    <Header />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <Footer />
+    <BackToTop />
+
+    <script>
+      /* Scroll reveal — one shared observer for every [data-reveal] element. */
+      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+      const revealAll = () =>
+        document
+          .querySelectorAll("[data-reveal]")
+          .forEach((el) => el.classList.add("is-revealed"));
+
+      if (reduced.matches || !("IntersectionObserver" in window)) {
+        revealAll();
+      } else {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("is-revealed");
+                observer.unobserve(entry.target);
+              }
+            }
+          },
+          { rootMargin: "0px 0px -8% 0px", threshold: 0.05 },
+        );
+
+        document
+          .querySelectorAll("[data-reveal]")
+          .forEach((el) => observer.observe(el));
+
+        // Anything already in view on load should not wait for a scroll.
+        requestAnimationFrame(() => {
+          document.querySelectorAll("[data-reveal]").forEach((el) => {
+            if (el.getBoundingClientRect().top < window.innerHeight) {
+              el.classList.add("is-revealed");
+            }
+          });
+        });
+
+        // Failsafe: if the observer never fires (background tab, an
+        // unsupported environment, a scroll restored before hydration),
+        // show everything rather than leave the page blank.
+        window.setTimeout(revealAll, 2000);
+      }
+    </script>
+  </body>
+</html>

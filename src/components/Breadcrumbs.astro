@@ -1,0 +1,103 @@
+---
+import { site } from "~/content/site";
+
+interface Crumb {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  trail: Crumb[];
+  inverse?: boolean;
+}
+
+const { trail, inverse = false } = Astro.props;
+const items = [{ label: "Home", href: "/" }, ...trail];
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: items.map((crumb, index) => ({
+    "@type": "ListItem",
+    position: index + 1,
+    name: crumb.label,
+    ...(crumb.href ? { item: new URL(crumb.href, site.url).href } : {}),
+  })),
+};
+---
+
+<nav
+  class:list={["breadcrumbs", inverse && "breadcrumbs--inverse"]}
+  aria-label="Breadcrumb"
+>
+  <ol class="breadcrumbs__list">
+    {
+      items.map((crumb, index) => (
+        <li class="breadcrumbs__item">
+          {crumb.href && index < items.length - 1 ? (
+            <a href={crumb.href}>{crumb.label}</a>
+          ) : (
+            <span aria-current="page">{crumb.label}</span>
+          )}
+          {index < items.length - 1 && (
+            <span class="breadcrumbs__sep" aria-hidden="true">
+              /
+            </span>
+          )}
+        </li>
+      ))
+    }
+  </ol>
+</nav>
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
+
+<style>
+  .breadcrumbs__list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: var(--step--1);
+  }
+
+  .breadcrumbs__item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--color-text-subtle);
+  }
+
+  .breadcrumbs__item a {
+    color: var(--color-text-muted);
+    text-decoration: none;
+  }
+
+  .breadcrumbs__item a:hover {
+    color: var(--color-primary);
+    text-decoration: underline;
+  }
+
+  .breadcrumbs__item [aria-current="page"] {
+    color: var(--color-text);
+    font-weight: 500;
+  }
+
+  .breadcrumbs__sep {
+    color: var(--color-border-strong);
+  }
+
+  .breadcrumbs--inverse .breadcrumbs__item,
+  .breadcrumbs--inverse .breadcrumbs__sep {
+    color: var(--color-text-inverse-muted);
+  }
+  .breadcrumbs--inverse .breadcrumbs__item a {
+    color: var(--color-text-inverse-muted);
+  }
+  .breadcrumbs--inverse .breadcrumbs__item a:hover,
+  .breadcrumbs--inverse .breadcrumbs__item [aria-current="page"] {
+    color: var(--color-text-inverse);
+  }
+</style>

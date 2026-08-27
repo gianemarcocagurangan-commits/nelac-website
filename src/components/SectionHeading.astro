@@ -1,0 +1,104 @@
+---
+/**
+ * Section heading: small brass eyebrow, display title, optional lead line.
+ */
+interface Props {
+  eyebrow?: string;
+  title: string;
+  lead?: string;
+  align?: "start" | "center";
+  as?: "h1" | "h2" | "h3";
+  id?: string;
+  inverse?: boolean;
+  class?: string;
+}
+
+const {
+  eyebrow,
+  title,
+  lead,
+  align = "start",
+  as: Tag = "h2",
+  id,
+  inverse = false,
+  class: className,
+} = Astro.props;
+---
+
+<header
+  class:list={[
+    "section-heading",
+    `section-heading--${align}`,
+    inverse && "section-heading--inverse",
+    className,
+  ]}
+  data-reveal
+>
+  {eyebrow && <p class="section-heading__eyebrow">{eyebrow}</p>}
+  <Tag class="section-heading__title" id={id} set:html={title} />
+  {lead && <p class="section-heading__lead" set:html={lead} />}
+</header>
+
+<style>
+  .section-heading {
+    max-width: 46rem;
+    margin-block-end: var(--space-7);
+  }
+
+  .section-heading--center {
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .section-heading__eyebrow {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-block-end: var(--space-3);
+    font-size: var(--step--1);
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+
+  .section-heading__eyebrow::after {
+    content: "";
+    flex: 1 1 auto;
+    height: 1px;
+    max-width: 4.5rem;
+    background-color: currentColor;
+    opacity: 0.45;
+  }
+
+  .section-heading--center .section-heading__eyebrow {
+    justify-content: center;
+  }
+
+  .section-heading--center .section-heading__eyebrow::before {
+    content: "";
+    flex: 1 1 auto;
+    height: 1px;
+    max-width: 4.5rem;
+    background-color: currentColor;
+    opacity: 0.45;
+  }
+
+  .section-heading__title {
+    font-size: var(--step-4);
+  }
+
+  .section-heading__lead {
+    margin-block-start: var(--space-4);
+    font-size: var(--step-1);
+    line-height: 1.55;
+    color: var(--color-text-muted);
+  }
+
+  .section-heading--inverse .section-heading__eyebrow {
+    color: var(--nelac-brass-300);
+  }
+  .section-heading--inverse .section-heading__lead {
+    color: var(--color-text-inverse-muted);
+  }
+</style>

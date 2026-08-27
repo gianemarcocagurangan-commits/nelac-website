@@ -1,0 +1,245 @@
+---
+import { Image } from "astro:assets";
+import Icon from "./Icon.astro";
+import type { Conference } from "~/content/research";
+
+interface Props {
+  conference: Conference;
+  eager?: boolean;
+}
+
+const { conference, eager = false } = Astro.props;
+
+/** Group the speakers by the role printed on the school's own poster. */
+const roles = [...new Set(conference.speakers.map((s) => s.role ?? "Speakers"))];
+---
+
+<article class="conference" id={conference.id} data-reveal>
+  <div class="conference__grid">
+    <figure class="conference__figure">
+      <Image
+        src={conference.photo}
+        alt={conference.photoAlt}
+        widths={[400, 700, 1000]}
+        sizes="(min-width: 62rem) 40vw, 92vw"
+        loading={eager ? "eager" : "lazy"}
+        class="conference__image"
+      />
+    </figure>
+
+    <div class="conference__body">
+      <h3 class="conference__title">{conference.title}</h3>
+
+      <dl class="conference__facts">
+        <div>
+          <dt><Icon name="calendar" size={17} /> Date</dt>
+          <dd>
+            <time datetime={conference.date}>{conference.displayDate}</time>
+            {conference.time && <span class="conference__time">{conference.time}</span>}
+          </dd>
+        </div>
+        {
+          conference.venue && (
+            <div>
+              <dt>
+                <Icon name="map-pin" size={17} /> Venue
+              </dt>
+              <dd>{conference.venue}</dd>
+            </div>
+          )
+        }
+        {
+          conference.features && (
+            <div>
+              <dt>
+                <Icon name="sparkle" size={17} /> Features
+              </dt>
+              <dd>{conference.features.join(" · ")}</dd>
+            </div>
+          )
+        }
+      </dl>
+
+      {
+        conference.theme && (
+          <blockquote class="conference__theme">
+            <p class="conference__theme-label">Theme</p>
+            <p class="conference__theme-text">&ldquo;{conference.theme}&rdquo;</p>
+          </blockquote>
+        )
+      }
+
+      {
+        roles.map((role) => (
+          <div class="conference__group">
+            <h4 class="conference__group-title">{role}</h4>
+            <ul class="conference__speakers">
+              {conference.speakers
+                .filter((speaker) => (speaker.role ?? "Speakers") === role)
+                .map((speaker) => (
+                  <li>
+                    <span class="conference__speaker-name">{speaker.name}</span>
+                    {speaker.affiliation && (
+                      <span class="conference__speaker-role">
+                        {speaker.affiliation}
+                      </span>
+                    )}
+                  </li>
+                ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</article>
+
+<style>
+  .conference {
+    padding-block: var(--space-7);
+    border-block-start: 1px solid var(--color-border);
+    scroll-margin-top: calc(var(--header-height) + 3rem);
+  }
+
+  .conference:first-of-type {
+    border-block-start: none;
+    padding-block-start: 0;
+  }
+
+  .conference__grid {
+    display: grid;
+    gap: var(--space-6);
+    align-items: start;
+  }
+
+  @media (min-width: 62rem) {
+    .conference__grid {
+      grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr);
+      gap: var(--space-8);
+    }
+  }
+
+  .conference__figure {
+    margin: 0;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background-color: var(--color-surface);
+  }
+
+  :global(.conference__image) {
+    width: 100%;
+    height: auto;
+  }
+
+  .conference__title {
+    font-size: var(--step-3);
+  }
+
+  .conference__facts {
+    display: grid;
+    gap: var(--space-3);
+    margin-block-start: var(--space-4);
+  }
+
+  .conference__facts > div {
+    display: grid;
+    gap: 2px;
+  }
+
+  .conference__facts dt {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: 0.78rem;
+    font-weight: 650;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--color-text-subtle);
+  }
+
+  .conference__facts dt :global(svg) {
+    color: var(--color-accent);
+  }
+
+  .conference__facts dd {
+    margin: 0;
+    padding-inline-start: calc(17px + var(--space-2));
+    font-size: var(--step--1);
+    line-height: 1.6;
+    color: var(--color-text-muted);
+  }
+
+  .conference__time::before {
+    content: " · ";
+  }
+
+  .conference__theme {
+    margin: var(--space-5) 0 0;
+    padding: var(--space-4) var(--space-5);
+    border-inline-start: 3px solid var(--nelac-brass-500);
+    background-color: var(--color-surface);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  }
+
+  .conference__theme-label {
+    font-size: 0.72rem;
+    font-weight: 650;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+
+  .conference__theme-text {
+    margin-block-start: var(--space-2);
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    font-style: italic;
+    line-height: 1.45;
+  }
+
+  .conference__group {
+    margin-block-start: var(--space-5);
+  }
+
+  .conference__group-title {
+    font-family: var(--font-sans);
+    font-size: 0.78rem;
+    font-weight: 650;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--color-text-subtle);
+  }
+
+  .conference__speakers {
+    display: grid;
+    gap: var(--space-3);
+    margin: var(--space-3) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (min-width: 40rem) {
+    .conference__speakers {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .conference__speakers li {
+    display: flex;
+    flex-direction: column;
+    padding-inline-start: var(--space-3);
+    border-inline-start: 2px solid var(--nelac-green-100);
+  }
+
+  .conference__speaker-name {
+    font-weight: 650;
+    font-size: var(--step--1);
+  }
+
+  .conference__speaker-role {
+    font-size: var(--step--1);
+    line-height: 1.5;
+    color: var(--color-text-subtle);
+  }
+</style>

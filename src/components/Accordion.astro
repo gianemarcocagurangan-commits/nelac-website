@@ -1,0 +1,131 @@
+---
+/**
+ * Accessible accordion built on <details>/<summary>: keyboard operable and
+ * fully functional with JavaScript disabled. Progressive enhancement adds a
+ * smooth open/close animation.
+ */
+interface Props {
+  title: string;
+  /** Optional small label shown to the right of the title. */
+  meta?: string;
+  open?: boolean;
+  /** Groups accordions so only one stays open at a time. */
+  name?: string;
+  id?: string;
+  class?: string;
+}
+
+const { title, meta, open = false, name, id, class: className } = Astro.props;
+---
+
+<details class:list={["accordion", className]} open={open} name={name} id={id}>
+  <summary class="accordion__summary">
+    <span class="accordion__title">{title}</span>
+    {meta && <span class="accordion__meta">{meta}</span>}
+    <svg
+      class="accordion__chevron"
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.8"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <path d="m6 9.5 6 6 6-6"></path>
+    </svg>
+  </summary>
+  <div class="accordion__panel">
+    <div class="accordion__panel-inner">
+      <slot />
+    </div>
+  </div>
+</details>
+
+<style>
+  .accordion {
+    border-block-end: 1px solid var(--color-border);
+  }
+
+  .accordion:first-of-type {
+    border-block-start: 1px solid var(--color-border);
+  }
+
+  .accordion__summary {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding-block: var(--space-5);
+    list-style: none;
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    font-weight: 600;
+    color: var(--color-text);
+    transition: color var(--duration) var(--ease-out);
+  }
+
+  .accordion__summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .accordion__summary:hover {
+    color: var(--color-primary);
+  }
+
+  .accordion__summary:focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 3px;
+  }
+
+  .accordion__title {
+    flex: 1 1 auto;
+  }
+
+  .accordion__meta {
+    flex: none;
+    font-family: var(--font-sans);
+    font-size: var(--step--1);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--color-text-subtle);
+  }
+
+  .accordion__chevron {
+    flex: none;
+    color: var(--color-accent);
+    transition: transform var(--duration) var(--ease-out);
+  }
+
+  .accordion[open] .accordion__chevron {
+    transform: rotate(180deg);
+  }
+
+  .accordion__panel-inner {
+    padding-block-end: var(--space-6);
+  }
+
+  /* Height animation, only where the browser supports interpolating to auto. */
+  @supports (interpolate-size: allow-keywords) {
+    .accordion__panel {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows var(--duration) var(--ease-out);
+    }
+    .accordion__panel > * {
+      overflow: hidden;
+    }
+    .accordion[open] .accordion__panel {
+      grid-template-rows: 1fr;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .accordion__chevron,
+    .accordion__panel {
+      transition: none;
+    }
+  }
+</style>

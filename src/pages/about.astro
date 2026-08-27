@@ -1,0 +1,370 @@
+---
+import PageLayout from "~/layouts/PageLayout.astro";
+import SectionHeading from "~/components/SectionHeading.astro";
+import StatBand from "~/components/StatBand.astro";
+import Timeline from "~/components/Timeline.astro";
+import LeaderCard from "~/components/LeaderCard.astro";
+import Accordion from "~/components/Accordion.astro";
+import Notice from "~/components/Notice.astro";
+import CallToAction from "~/components/CallToAction.astro";
+import Icon from "~/components/Icon.astro";
+import Gallery from "~/components/Gallery.astro";
+
+import elementaryPhoto from "~/assets/images/departments/elementary.jpg";
+import juniorHighPhoto from "~/assets/images/departments/junior-high.jpg";
+import seniorHighPhoto from "~/assets/images/departments/senior-high.jpg";
+import collegePhoto from "~/assets/images/departments/arts-and-education.jpg";
+import auditoriumPhoto from "~/assets/images/departments/technical-vocational.jpg";
+
+import {
+  historyIntro,
+  historyChapters,
+  historyClosing,
+  historyFacts,
+} from "~/content/history";
+import { leaders, leadershipHeading, presidentsMessage } from "~/content/leadership";
+import { site } from "~/content/site";
+
+/** The school's own photographs of its buildings in Mabini, Alicia. */
+const campusPhotos = [
+  {
+    image: seniorHighPhoto,
+    alt: "Aerial view of the two-storey Senior High School Department buildings, with red roofs around a central courtyard",
+    caption: "Senior High School Department",
+  },
+  {
+    image: collegePhoto,
+    alt: "The college building seen from the tree-lined walkway, with noticeboards along the ground floor",
+    caption: "College building",
+  },
+  {
+    image: auditoriumPhoto,
+    alt: "The arched main building on the campus, framed by young trees",
+    caption: "Main building",
+  },
+  {
+    image: elementaryPhoto,
+    alt: "The Elementary Department building with its blue roof, palms and flowering garden frontage",
+    caption: "Elementary Department",
+  },
+  {
+    image: juniorHighPhoto,
+    alt: "The signposted walkway leading to the Junior High School building for grades 9 and 10",
+    caption: "Junior High School entrance",
+  },
+];
+---
+
+<PageLayout
+  title="About NELAC"
+  heading="About Northeast Luzon Adventist College"
+  eyebrow="About"
+  description="The history, milestones and administration of Northeast Luzon Adventist College — a boarding Seventh-day Adventist institution in Mabini, Alicia, Isabela, founded in 1948."
+  lead="A boarding Seventh-day Adventist institution operated by the North Philippine Union Conference, serving the Cagayan valley since 1948."
+  trail={[{ label: "About NELAC" }]}
+>
+  <!-- ======= Introduction ======= -->
+  <section class="section" id="history" aria-labelledby="intro-title">
+    <div class="container about-intro">
+      <div>
+        <SectionHeading
+          eyebrow="History"
+          title="NELACOLLEGE History"
+          id="intro-title"
+        />
+        <div class="prose prose--dropcap">
+          {historyIntro.map((paragraph) => <p set:html={paragraph} />)}
+        </div>
+        <p class="about-promise">{site.promise}</p>
+
+        <p class="about-intro__more">
+          <a class="link-arrow" href="/history">
+            Read the complete history
+            <Icon name="arrow-right" size={18} />
+          </a>
+        </p>
+      </div>
+
+      <aside class="about-intro__aside" aria-label="NELAC at a glance">
+        <h2 class="about-intro__aside-title">At a glance</h2>
+        <StatBand
+          stats={historyFacts}
+          source="Figures as published in the school's official history."
+        />
+      </aside>
+    </div>
+  </section>
+
+  <!-- ======= Timeline ======= -->
+  <section class="section section--alt" id="timeline" aria-labelledby="timeline-title">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Milestones"
+        title="A timeline of the school"
+        id="timeline-title"
+        lead="Every milestone below is drawn from the school's own account of its history."
+      />
+      <Timeline />
+    </div>
+  </section>
+
+  <!-- ======= History chapters ======= -->
+  <section class="section" aria-labelledby="chapters-title">
+    <div class="container container--narrow">
+      <SectionHeading
+        eyebrow="In detail"
+        title="How the school came to be"
+        id="chapters-title"
+        lead="The full text of the school's history, organised into chapters. Open a chapter to read it here, or read the whole account on one page."
+      />
+
+      {
+        historyChapters.map((chapter, index) => (
+          <Accordion
+            title={chapter.heading}
+            meta={`${chapter.paragraphs.length} paragraphs`}
+            open={index === 0}
+          >
+            <div class="prose">
+              {chapter.paragraphs.map((paragraph) => (
+                <p set:html={paragraph} />
+              ))}
+            </div>
+          </Accordion>
+        ))
+      }
+
+      <blockquote class="closing" data-reveal>
+        <p set:html={historyClosing.paragraph} />
+        <p class="closing__quote">&ldquo;{historyClosing.quote}&rdquo;</p>
+      </blockquote>
+
+      <p class="about-intro__more">
+        <a class="link-arrow" href="/history">
+          Open the full history on its own page
+          <Icon name="arrow-right" size={18} />
+        </a>
+      </p>
+    </div>
+  </section>
+
+  <!-- ======= President's message ======= -->
+  <section
+    class="section section--alt"
+    id="presidents-message"
+    aria-labelledby="president-title"
+  >
+    <div class="container container--narrow">
+      <SectionHeading
+        eyebrow="From the Office of the President"
+        title={presidentsMessage.heading}
+        id="president-title"
+        lead={presidentsMessage.greeting}
+      />
+
+      {
+        presidentsMessage.body.length > 0 ? (
+          <div class="prose">
+            {presidentsMessage.body.map((paragraph) => (
+              <p set:html={paragraph} />
+            ))}
+          </div>
+        ) : (
+          <Notice tone="pending" title="This message is being prepared">
+            {presidentsMessage.pendingNote}
+          </Notice>
+        )
+      }
+
+      <p class="president__sign">
+        <strong>{presidentsMessage.author}</strong>
+        <span>{presidentsMessage.authorPosition}</span>
+      </p>
+    </div>
+  </section>
+
+  <!-- ======= Campus gallery ======= -->
+  <section class="section section--paper" id="campus" aria-labelledby="campus-title">
+    <div class="container">
+      <SectionHeading
+        eyebrow="The campus"
+        title="Twenty-one hectares along the highway"
+        id="campus-title"
+        lead="The school's own photographs of its buildings in Mabini, Alicia, Isabela. Select a photograph to view it larger."
+      />
+      <Gallery id="campus-gallery" items={campusPhotos} columns={3} />
+    </div>
+  </section>
+
+  <!-- ======= Administration ======= -->
+  <section class="section section--alt" id="administration" aria-labelledby="admin-title">
+    <div class="container">
+      <SectionHeading
+        eyebrow={leadershipHeading.eyebrow}
+        title={leadershipHeading.title}
+        id="admin-title"
+        lead="The officers leading Northeast Luzon Adventist College."
+      />
+      <ul class="grid grid--cards leaders">
+        {leaders.map((leader, index) => <LeaderCard leader={leader} index={index} />)}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ======= Alumni ======= -->
+  <section class="section" id="alumni" aria-labelledby="alumni-title">
+    <div class="container container--narrow">
+      <SectionHeading
+        eyebrow="Alumni"
+        title="The Northeast Luzon Academy Alumni Association"
+        id="alumni-title"
+      />
+      <div class="prose">
+        <p>
+          The alumni of the school who migrated to the U.S.A. were conscious of
+          the needs of their alma mater.
+        </p>
+        <p>
+          The Northeast Luzon Academy Alumni Association (NELAAA) North America
+          joined their resources and initiated the construction of the school&rsquo;s
+          auditorium in 2006. The alumni organization donated 75 percent of the
+          funding for this project, while 25 percent was raised locally.
+        </p>
+        <p>
+          Again, in 2010, a two-story building was donated by loving donors and
+          alumni, and in 2014 the E. A. Manalo Foundation constructed a building
+          for the school. These projects signify the endless love of our donors,
+          alumni, and friends to the institution in the valley.
+        </p>
+        <p>
+          The Northeast Luzon Academy Alumni Association in North America, with
+          Francisca Manalo Diaz as the president, assisted in the physical
+          metamorphosis, enhancing competency through some teachers upgrading
+          programs. She said, &ldquo;We collectively resolved to continue exploring,
+          developing, thriving and working until our beloved Alma Matter evolved
+          into a full-fledged college.&rdquo;
+        </p>
+      </div>
+      <Notice tone="pending" class="alumni__notice">
+        Contact details for the Alumni Association have not been published on
+        this website yet. Alumni enquiries can be sent to the school in the
+        meantime — see the <a href="/contact">contact page</a>.
+      </Notice>
+    </div>
+  </section>
+
+  <CallToAction />
+</PageLayout>
+
+<style>
+  .about-intro {
+    display: grid;
+    gap: var(--space-8);
+    align-items: start;
+  }
+
+  @media (min-width: 62rem) {
+    .about-intro {
+      grid-template-columns: 1.4fr 1fr;
+      gap: var(--space-9);
+    }
+  }
+
+  .about-intro__aside {
+    padding: var(--space-6);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background-color: var(--color-surface);
+    position: sticky;
+    top: calc(var(--header-height) + var(--space-5));
+  }
+
+  @media (max-width: 61.99rem) {
+    .about-intro__aside {
+      position: static;
+    }
+  }
+
+  .about-intro__aside-title {
+    margin-block-end: var(--space-5);
+    font-family: var(--font-sans);
+    font-size: var(--step--1);
+    font-weight: 650;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-text-subtle);
+  }
+
+  .about-intro__aside :global(.stat-band__list) {
+    grid-template-columns: 1fr;
+  }
+
+  /* The line the school prints on its own admission material. */
+  .about-promise {
+    margin-block-start: var(--space-6);
+    padding-inline-start: var(--space-4);
+    border-inline-start: 3px solid var(--nelac-brass-500);
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    font-style: italic;
+    line-height: 1.4;
+    color: var(--color-primary);
+  }
+
+  .about-intro__more {
+    margin-block-start: var(--space-6);
+  }
+
+  .closing {
+    margin: var(--space-8) 0 0;
+    padding: var(--space-6);
+    border-inline-start: 3px solid var(--nelac-brass-500);
+    background-color: var(--color-surface);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  }
+
+  .closing p {
+    line-height: 1.75;
+    color: var(--color-text-muted);
+  }
+
+  .closing__quote {
+    margin-block-start: var(--space-4);
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    font-weight: 600;
+    font-style: italic;
+    color: var(--color-primary);
+  }
+
+  .president__sign {
+    display: flex;
+    flex-direction: column;
+    margin-block-start: var(--space-6);
+    padding-inline-start: var(--space-4);
+    border-inline-start: 3px solid var(--nelac-brass-500);
+  }
+
+  .president__sign strong {
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+  }
+
+  .president__sign span {
+    font-size: var(--step--1);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+
+  :global(.alumni__notice) {
+    margin-block-start: var(--space-6);
+  }
+
+  .leaders {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+</style>

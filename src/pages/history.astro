@@ -1,0 +1,264 @@
+---
+import PageLayout from "~/layouts/PageLayout.astro";
+import Icon from "~/components/Icon.astro";
+import CallToAction from "~/components/CallToAction.astro";
+import Notice from "~/components/Notice.astro";
+
+import {
+  historyIntro,
+  historyChapters,
+  historyClosing,
+} from "~/content/history";
+
+/**
+ * The complete, unabridged history of the school on a single page, kept
+ * word-for-word as the institution published it.
+ */
+---
+
+<PageLayout
+  title="The full history of NELAC"
+  heading="The history of Northeast Luzon Adventist College"
+  eyebrow="History"
+  description="The complete published history of Northeast Luzon Adventist College — from Northeast Luzon Academy in Divisoria in 1948 to the Northeast Luzon Adventist School of Technology today."
+  lead="The school's own account of its founding, its move to Mabini, and the decades of growth that followed — reproduced in full."
+  trail={[{ label: "About NELAC", href: "/about" }, { label: "Full history" }]}
+>
+  <div class="history">
+    <div class="container history__layout">
+      <!-- ======= Chapter navigation ======= -->
+      <nav class="history__toc" aria-labelledby="toc-title">
+        <h2 class="history__toc-title" id="toc-title">On this page</h2>
+        <ul class="history__toc-list">
+          <li>
+            <a href="#overview" class="history__toc-link">Overview</a>
+          </li>
+          {
+            historyChapters.map((chapter) => (
+              <li>
+                <a href={`#${chapter.id}`} class="history__toc-link">
+                  {chapter.navLabel}
+                </a>
+              </li>
+            ))
+          }
+          <li>
+            <a href="#closing" class="history__toc-link">Today</a>
+          </li>
+        </ul>
+        <a class="link-arrow link-arrow--muted history__toc-back" href="/about">
+          <Icon name="chevron-right" size={16} class="history__toc-back-icon" />
+          Back to About
+        </a>
+      </nav>
+
+      <!-- ======= The history itself ======= -->
+      <article class="history__body">
+        <section id="overview" aria-labelledby="overview-title">
+          <h2 class="history__heading" id="overview-title">Overview</h2>
+          <div class="prose prose--dropcap history__prose">
+            {historyIntro.map((paragraph) => <p set:html={paragraph} />)}
+          </div>
+        </section>
+
+        {
+          historyChapters.map((chapter) => (
+            <section id={chapter.id} aria-labelledby={`${chapter.id}-title`}>
+              <h2 class="history__heading" id={`${chapter.id}-title`}>
+                {chapter.heading}
+              </h2>
+              <div class="prose history__prose">
+                {chapter.paragraphs.map((paragraph) => (
+                  <p set:html={paragraph} />
+                ))}
+              </div>
+            </section>
+          ))
+        }
+
+        <section id="closing" aria-labelledby="closing-title">
+          <h2 class="visually-hidden" id="closing-title">
+            The school today
+          </h2>
+          <blockquote class="history__closing">
+            <p set:html={historyClosing.paragraph} />
+            <p class="history__closing-quote">
+              &ldquo;{historyClosing.quote}&rdquo;
+            </p>
+          </blockquote>
+        </section>
+
+        <Notice tone="info" class="history__note">
+          The superscript numbers in this text are the reference markers that
+          appear in the school's published history. The full reference list has
+          not been supplied to this website.
+        </Notice>
+      </article>
+    </div>
+  </div>
+
+  <CallToAction
+    title="Be part of the next chapter"
+    text="Northeast Luzon Adventist College has welcomed students from across the Cagayan valley since 1948."
+  />
+</PageLayout>
+
+<style>
+  .history {
+    padding-block: var(--section-y);
+  }
+
+  .history__layout {
+    display: grid;
+    gap: var(--space-8);
+    align-items: start;
+  }
+
+  @media (min-width: 64rem) {
+    .history__layout {
+      grid-template-columns: 15rem minmax(0, 1fr);
+      gap: var(--space-9);
+    }
+  }
+
+  /* ---------- Table of contents ---------- */
+  .history__toc {
+    padding: var(--space-5);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background-color: var(--color-surface);
+  }
+
+  @media (min-width: 64rem) {
+    .history__toc {
+      position: sticky;
+      top: calc(var(--header-height) + var(--space-5));
+    }
+  }
+
+  .history__toc-title {
+    font-family: var(--font-sans);
+    font-size: var(--step--1);
+    font-weight: 650;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-text-subtle);
+  }
+
+  .history__toc-list {
+    margin: var(--space-4) 0 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .history__toc-link {
+    display: block;
+    padding: 0.5rem 0.7rem;
+    border-radius: var(--radius-sm);
+    border-inline-start: 2px solid transparent;
+    font-size: var(--step--1);
+    font-weight: 550;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition:
+      background-color var(--duration) var(--ease-out),
+      border-color var(--duration) var(--ease-out),
+      color var(--duration) var(--ease-out);
+  }
+
+  .history__toc-link:hover,
+  .history__toc-link.is-current {
+    background-color: var(--nelac-green-50);
+    border-inline-start-color: var(--nelac-brass-500);
+    color: var(--color-primary);
+  }
+
+  .history__toc-back {
+    margin-block-start: var(--space-5);
+    font-size: var(--step--1);
+  }
+
+  :global(.history__toc-back-icon) {
+    transform: rotate(180deg);
+  }
+
+  /* ---------- Body ---------- */
+  .history__body > section + section {
+    margin-block-start: var(--space-8);
+  }
+
+  .history__body section {
+    scroll-margin-top: calc(var(--header-height) + var(--space-6));
+  }
+
+  .history__heading {
+    padding-block-end: var(--space-3);
+    margin-block-end: var(--space-5);
+    border-block-end: 1px solid var(--color-border);
+    font-size: var(--step-3);
+  }
+
+  .history__prose {
+    max-width: 66ch;
+  }
+
+  .history__closing {
+    margin: 0;
+    padding: var(--space-6);
+    border-inline-start: 3px solid var(--nelac-brass-500);
+    background-color: var(--color-surface);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  }
+
+  .history__closing p {
+    line-height: 1.75;
+    color: var(--color-text-muted);
+  }
+
+  .history__closing-quote {
+    margin-block-start: var(--space-4);
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    font-weight: 600;
+    font-style: italic;
+    color: var(--color-primary);
+  }
+
+  :global(.history__note) {
+    margin-block-start: var(--space-7);
+  }
+</style>
+
+<script>
+  /* Highlight the section the reader is currently in. */
+  const links = Array.from(
+    document.querySelectorAll<HTMLAnchorElement>(".history__toc-link"),
+  );
+  const sections = links
+    .map((link) => document.querySelector<HTMLElement>(link.hash))
+    .filter((section): section is HTMLElement => section !== null);
+
+  if (sections.length && "IntersectionObserver" in window) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+        if (!visible) return;
+
+        links.forEach((link) =>
+          link.classList.toggle(
+            "is-current",
+            link.hash === `#${visible.target.id}`,
+          ),
+        );
+      },
+      { rootMargin: "-15% 0px -70% 0px" },
+    );
+
+    sections.forEach((section) => observer.observe(section));
+  }
+</script>

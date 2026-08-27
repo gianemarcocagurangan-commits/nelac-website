@@ -1,0 +1,77 @@
+---
+interface Stat {
+  value: string;
+  label: string;
+}
+
+interface Props {
+  stats: readonly Stat[];
+  /** Small print explaining where the figures come from. */
+  source?: string;
+}
+
+const { stats, source } = Astro.props;
+---
+
+<div class="stat-band">
+  <dl class="stat-band__list">
+    {
+      stats.map((stat, index) => (
+        <div class="stat-band__item" data-reveal style={`--reveal-delay:${index * 70}ms`}>
+          <dt class="stat-band__value">{stat.value}</dt>
+          <dd class="stat-band__label">{stat.label}</dd>
+        </div>
+      ))
+    }
+  </dl>
+  {source && <p class="stat-band__source">{source}</p>}
+</div>
+
+<style>
+  .stat-band__list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-5) var(--space-4);
+    margin: 0;
+  }
+
+  @media (min-width: 52rem) {
+    .stat-band__list {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .stat-band__item {
+    padding-inline-start: var(--space-4);
+    border-inline-start: 2px solid var(--nelac-brass-500);
+  }
+
+  .stat-band__value {
+    font-family: var(--font-display);
+    font-size: var(--step-3);
+    font-weight: 600;
+    line-height: 1.1;
+    color: var(--color-primary);
+  }
+
+  .stat-band__label {
+    margin: var(--space-2) 0 0;
+    font-size: var(--step--1);
+    line-height: 1.55;
+    color: var(--color-text-muted);
+  }
+
+  .stat-band__source {
+    margin-block-start: var(--space-5);
+    font-size: var(--step--1);
+    color: var(--color-text-subtle);
+  }
+
+  :global(.section--inverse) .stat-band__value {
+    color: var(--nelac-brass-300);
+  }
+
+  :global(.section--inverse) .stat-band__label {
+    color: var(--color-text-inverse-muted);
+  }
+</style>
