@@ -230,7 +230,7 @@ import Icon from "./Icon.astro";
         .catch(() => {
           loading = null;
           results.innerHTML =
-            '<p class="search-empty">Search is unavailable at the moment. Please use the menu, or <a href="/contact">contact the school</a>.</p>';
+            '<p class="search-empty">Search is unavailable at the moment. Please use the menu, or <a href="/contact/">contact the school</a>.</p>';
           throw new Error("search index unavailable");
         });
       return loading;
@@ -296,7 +296,7 @@ import Icon from "./Icon.astro";
       if (matches.length === 0) {
         results.innerHTML = `<p class="search-empty">No results for &ldquo;${escapeHtml(
           query,
-        )}&rdquo;. Try a different word, or <a href="/contact">contact the school</a>.</p>`;
+        )}&rdquo;. Try a different word, or <a href="/contact/">contact the school</a>.</p>`;
         return;
       }
 

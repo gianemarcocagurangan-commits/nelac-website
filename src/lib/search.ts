@@ -37,55 +37,55 @@ const pages: SearchEntry[] = [
   },
   {
     title: "About NELAC",
-    href: "/about",
+    href: "/about/",
     section: "Pages",
     text: "History administration president's message timeline milestones alumni association",
   },
   {
     title: "Academics",
-    href: "/academics",
+    href: "/academics/",
     section: "Pages",
     text: "Departments accreditation programmes kindergarten elementary junior high senior high technical vocational",
   },
   {
     title: "Student Life & Services",
-    href: "/services",
+    href: "/services/",
     section: "Pages",
     text: "Dormitories food services clinic guidance pathfinder master guide student services",
   },
   {
     title: "Admissions",
-    href: "/admissions",
+    href: "/admissions/",
     section: "Pages",
     text: "Admission and records enrolment enrollment apply requirements how to join",
   },
   {
     title: "Research & Publication",
-    href: "/research",
+    href: "/research/",
     section: "Pages",
     text: "Institutional research conference ACRA Adventist Colleges Research Association newsletters",
   },
   {
     title: "Financial Information",
-    href: "/finance",
+    href: "/finance/",
     section: "Pages",
     text: "Tuition fees approximate amount finance office payment",
   },
   {
     title: "News & Announcements",
-    href: "/news",
+    href: "/news/",
     section: "Pages",
     text: "News announcements updates events",
   },
   {
     title: "Contact",
-    href: "/contact",
+    href: "/contact/",
     section: "Pages",
     text: "Contact address email phone map location Mabini Alicia Isabela Maharlika Highway job vacancy",
   },
   {
     title: "The full history of NELAC",
-    href: "/history",
+    href: "/history/",
     section: "Pages",
     text: "Complete official history Northeast Luzon Academy NELAST PUC-NELC AUP-NELC",
   },
@@ -95,13 +95,13 @@ export const searchIndex: SearchEntry[] = [
   ...pages,
   ...departments.map((department) => ({
     title: department.name,
-    href: `/academics#${department.slug}`,
+    href: `/academics/#${department.slug}`,
     section: "Departments",
     text: `${department.name} department indicative fee ${department.indicativeFee}`,
   })),
   ...services.map((service) => ({
     title: service.name,
-    href: `/services/${service.slug}`,
+    href: `/services/${service.slug}/`,
     section: "Student Services",
     text: `${service.name} ${service.summary}`,
   })),
@@ -113,37 +113,37 @@ export const searchIndex: SearchEntry[] = [
   })),
   ...leaders.map((leader) => ({
     title: leader.name,
-    href: "/about#administration",
+    href: "/about/#administration",
     section: "School Administration",
     text: `${leader.name} ${leader.position}`,
   })),
   ...accreditors.map((accreditor) => ({
     title: accreditor.name,
-    href: "/academics#accreditation",
+    href: "/academics/#accreditation",
     section: "Accreditation",
     text: stripMarkup(accreditor.alt),
   })),
   ...fees.map((fee) => ({
     title: `${fee.department} fees`,
-    href: "/finance",
+    href: "/finance/",
     section: "Finance",
     text: `${fee.department} ${fee.amountLabel} ${fee.amount}`,
   })),
   ...timeline.map((milestone) => ({
     title: `${milestone.year} — ${milestone.title}`,
-    href: "/about#timeline",
+    href: "/about/#timeline",
     section: "History",
     text: stripMarkup(milestone.description),
   })),
   ...historyChapters.map((chapter) => ({
     title: chapter.heading,
-    href: `/history#${chapter.id}`,
+    href: `/history/#${chapter.id}`,
     section: "History",
     text: stripMarkup(chapter.paragraphs.slice(0, 4).join(" ")).slice(0, 400),
   })),
   ...news.map((item) => ({
     title: item.title,
-    href: `/news#${item.slug}`,
+    href: `/news/#${item.slug}`,
     section: "News",
     text: stripMarkup(
       [item.excerpt, ...(item.lists ?? []).flatMap((list) => list.names)].join(
@@ -153,7 +153,7 @@ export const searchIndex: SearchEntry[] = [
   })),
   ...[...institutionalConferences, acra.conference].map((conference) => ({
     title: conference.title,
-    href: `/research#${conference.id}`,
+    href: `/research/#${conference.id}`,
     section: "Research",
     text: stripMarkup(
       [
@@ -166,7 +166,7 @@ export const searchIndex: SearchEntry[] = [
   })),
   {
     title: acra.title,
-    href: "/research#acra",
+    href: "/research/#acra",
     section: "Research",
     text: `${acra.abbreviation} ${acra.legalName} ${acra.memberColleges.join(" ")}`,
   },

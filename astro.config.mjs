@@ -18,9 +18,11 @@ const site =
 
 export default defineConfig({
   site,
-  // Netlify serves directory-index files without a trailing slash, so canonical
-  // URLs, internal links and the sitemap all agree on the no-slash form.
-  trailingSlash: "never",
+  // Netlify serves directory-index output (about/index.html) at /about/ and
+  // 301s /about to it. Matching that here keeps internal links, canonical URLs
+  // and the sitemap on the address Netlify actually serves, so no navigation
+  // costs a redirect and no canonical points at one.
+  trailingSlash: "always",
   integrations: [sitemap()],
   build: {
     inlineStylesheets: "auto",

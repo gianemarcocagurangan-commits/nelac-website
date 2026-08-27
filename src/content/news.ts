@@ -62,7 +62,7 @@ export const news: NewsItem[] = [
     image: irc5,
     imageAlt:
       "Poster for the 5th Institutional Research Conference of Northeast Luzon Adventist College, Inc. on January 26, 2026, 8:00 AM to 4:00 PM at the college auditorium in Mabini, Alicia, Isabela.",
-    href: "/research#irc-5th",
+    href: "/research/#irc-5th",
   },
   {
     slug: "6th-acra-annual-research-conference",
@@ -94,7 +94,7 @@ export const news: NewsItem[] = [
     image: acra6,
     imageAlt:
       "Poster for the 6th Annual Research Conference of the Adventist Colleges Research Association Inc., held September 23 to 24, 2024 at Northeast Luzon Adventist College Inc.",
-    href: "/research#acra",
+    href: "/research/#acra",
   },
   {
     slug: "3rd-institutional-research-conference",
@@ -122,7 +122,7 @@ export const news: NewsItem[] = [
     image: irc3,
     imageAlt:
       "Poster for the 2024 3rd Institutional Research Conference at the NELAC Auditorium, Mabini, Alicia, Isabela.",
-    href: "/research#irc-3rd",
+    href: "/research/#irc-3rd",
   },
   {
     slug: "let-passers-january-2022",

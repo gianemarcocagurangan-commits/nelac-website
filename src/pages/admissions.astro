@@ -116,7 +116,7 @@ import { contact } from "~/content/site";
         {
           departments.map((department, index) => (
             <li class="programme" data-reveal style={`--reveal-delay:${index * 55}ms`}>
-              <a href={`/academics#${department.slug}`}>
+              <a href={`/academics/#${department.slug}`}>
                 <span class="programme__name">{department.name}</span>
                 <span class="programme__fee">{department.indicativeFee}</span>
                 <Icon name="arrow-right" size={18} class="programme__arrow" />
@@ -127,7 +127,7 @@ import { contact } from "~/content/site";
       </ul>
       <p class="programmes__note">
         Amounts are the approximate figures published by the school.
-        <a href="/finance">See financial information</a>.
+        <a href="/finance/">See financial information</a>.
       </p>
     </div>
   </section>
@@ -158,7 +158,7 @@ import { contact } from "~/content/site";
       </ul>
 
       <p class="office-more">
-        <a class="link-arrow" href="/contact">
+        <a class="link-arrow" href="/contact/">
           Send a message to the school
           <Icon name="arrow-right" size={18} />
         </a>

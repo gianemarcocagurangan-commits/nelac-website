@@ -56,11 +56,11 @@ import { news } from "~/content/news";
           {historyIntro.slice(0, 3).map((paragraph) => <p set:html={paragraph} />)}
         </div>
         <p class="about-preview__actions">
-          <a class="link-arrow" href="/about">
+          <a class="link-arrow" href="/about/">
             Explore the timeline and administration
             <Icon name="arrow-right" size={18} />
           </a>
-          <a class="link-arrow link-arrow--muted" href="/history">
+          <a class="link-arrow link-arrow--muted" href="/history/">
             Read the full history
             <Icon name="arrow-right" size={18} />
           </a>
@@ -109,7 +109,7 @@ import { news } from "~/content/news";
         }
       </ul>
       <p class="section-more">
-        <a class="link-arrow" href="/academics#departments">
+        <a class="link-arrow" href="/academics/#departments">
           See all {departments.length} departments and our accreditation
           <Icon name="arrow-right" size={18} />
         </a>
@@ -181,7 +181,7 @@ import { news } from "~/content/news";
         )
       }
       <p class="section-more">
-        <a class="link-arrow" href="/news">
+        <a class="link-arrow" href="/news/">
           All news &amp; announcements
           <Icon name="arrow-right" size={18} />
         </a>

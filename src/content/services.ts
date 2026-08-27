@@ -80,19 +80,19 @@ export const services: Service[] = [
 export const offices = [
   {
     name: "Admission and Records",
-    href: "/admissions",
+    href: "/admissions/",
     description:
       "Enquiries about enrolment, student records and transcripts.",
   },
   {
     name: "Finance",
-    href: "/finance",
+    href: "/finance/",
     description:
       "School fees, payment arrangements and financial information.",
   },
   {
     name: "Job Vacancy",
-    href: "/contact#job-vacancy",
+    href: "/contact/#job-vacancy",
     description:
       "Enquiries about employment opportunities at the college.",
   },

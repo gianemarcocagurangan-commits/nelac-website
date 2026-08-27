@@ -11,7 +11,7 @@ const { service, index = 0 } = Astro.props;
 ---
 
 <li class="service" data-reveal style={`--reveal-delay:${index * 60}ms`}>
-  <a class="service__link" href={`/services/${service.slug}`}>
+  <a class="service__link" href={`/services/${service.slug}/`}>
     <span class="service__icon">
       <Icon name={service.icon as IconName} size={24} />
     </span>

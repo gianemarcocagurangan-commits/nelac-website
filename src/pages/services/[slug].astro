@@ -25,7 +25,7 @@ const others = services.filter((item) => item.slug !== service.slug);
   description={`${service.name} at Northeast Luzon Adventist College — ${service.summary}`}
   lead={service.summary}
   trail={[
-    { label: "Student Life & Services", href: "/services" },
+    { label: "Student Life & Services", href: "/services/" },
     { label: service.name },
   ]}
 >
@@ -73,7 +73,7 @@ const others = services.filter((item) => item.slug !== service.slug);
                   </li>
                 </ul>
                 <p>
-                  <a class="link-arrow" href="/contact">
+                  <a class="link-arrow" href="/contact/">
                     Send a message
                     <Icon name="arrow-right" size={18} />
                   </a>
@@ -92,7 +92,7 @@ const others = services.filter((item) => item.slug !== service.slug);
           {
             others.map((item) => (
               <li>
-                <a href={`/services/${item.slug}`}>
+                <a href={`/services/${item.slug}/`}>
                   {item.name}
                   <Icon name="chevron-right" size={16} />
                 </a>

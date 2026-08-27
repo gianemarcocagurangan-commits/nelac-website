@@ -46,7 +46,7 @@ const { item, index = 0, featured = false } = Astro.props;
     </p>
     <h3 class="news-card__title">{item.title}</h3>
     <p class="news-card__excerpt" set:html={item.excerpt} />
-    <a class="news-card__link" href={`/news#${item.slug}`}>
+    <a class="news-card__link" href={`/news/#${item.slug}`}>
       Read the full announcement
       <Icon name="arrow-right" size={17} />
     </a>

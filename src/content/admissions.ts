@@ -30,28 +30,28 @@ export const admissionSteps: AdmissionStep[] = [
     title: "Learn about NELAC",
     description:
       "Read the school's history and identity as a boarding Seventh-day Adventist institution operated by the North Philippine Union Conference, situated on 21 hectares along the national highway in Mabini, Alicia, Isabela.",
-    action: { label: "About NELAC", href: "/about" },
+    action: { label: "About NELAC", href: "/about/" },
   },
   {
     number: 2,
     title: "Choose your department",
     description:
       "NELAC offers K2/Elementary, Junior High School, Senior High School, the School of Arts & Education, and Technical Vocational programmes.",
-    action: { label: "View departments", href: "/academics#departments" },
+    action: { label: "View departments", href: "/academics/#departments" },
   },
   {
     number: 3,
     title: "Review the indicative fees",
     description:
       "The Finance page lists the approximate amounts published by the school for each department, so you can plan ahead before you enquire.",
-    action: { label: "Financial information", href: "/finance" },
+    action: { label: "Financial information", href: "/finance/" },
   },
   {
     number: 4,
     title: "Contact Admission and Records",
     description:
       "Reach the Admission and Records Office by email or phone, or visit the campus, to ask for the current requirements and the enrolment schedule for your department.",
-    action: { label: "Contact the office", href: "/contact" },
+    action: { label: "Contact the office", href: "/contact/" },
     pending:
       "The official list of admission requirements has not yet been published on this website. Please request it directly from the Admission and Records Office.",
   },
