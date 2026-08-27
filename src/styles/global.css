@@ -160,6 +160,23 @@ sup {
 }
 
 /* =========================================================================
+   SCROLL LOCK  (mobile navigation drawer)
+   Scoped to the drawer's own breakpoint so that widening the window always
+   releases the page, even if the script's state sync is missed.
+   ========================================================================= */
+html.nav-open,
+html.nav-open body {
+  overflow: hidden;
+}
+
+@media (min-width: 76rem) {
+  html.nav-open,
+  html.nav-open body {
+    overflow: visible;
+  }
+}
+
+/* =========================================================================
    LAYOUT PRIMITIVES
    ========================================================================= */
 .container {

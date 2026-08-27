@@ -4,7 +4,7 @@ import Icon from "./Icon.astro";
 
 import seniorHigh from "~/assets/images/departments/senior-high.jpg";
 import collegeBuilding from "~/assets/images/departments/arts-and-education.jpg";
-import auditorium from "~/assets/images/departments/technical-vocational.jpg";
+import elementary from "~/assets/images/departments/elementary.jpg";
 
 /**
  * Homepage hero.
@@ -18,6 +18,11 @@ import auditorium from "~/assets/images/departments/technical-vocational.jpg";
  * printed text; overlaying more text on them made both unreadable, so those
  * posters are now shown at full size where their text can actually be read —
  * on the News and Research pages.
+ *
+ * The main-building photograph is not used here: it carries the photographer's
+ * watermark across its centre, which collides with the headline at hero size.
+ * It is kept at card size on the Academics page, where the watermark reads as
+ * the credit it is instead of obscuring text.
  */
 const slides = [
   {
@@ -39,8 +44,8 @@ const slides = [
     secondary: { label: "Read our history", href: "/history" },
   },
   {
-    image: auditorium,
-    alt: "The arched main building on the Northeast Luzon Adventist College campus in Mabini, Alicia, Isabela",
+    image: elementary,
+    alt: "The Elementary Department building at Northeast Luzon Adventist College, with its blue roof, palms and flowering garden frontage",
     kicker: "Knowledge &",
     title: "Excellence",
     body: "In 2014 the first class of education majors graduated — one hundred percent of them passed the Licensure Examination for Teachers.",
@@ -387,6 +392,20 @@ const slides = [
     const pause = hero.querySelector<HTMLButtonElement>("[data-hero-pause]");
     const pauseLabel = hero.querySelector<HTMLElement>("[data-hero-pause-label]");
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    /* Slides 2 and 3 are lazy so they never compete with the first slide for
+       bandwidth, but a hidden lazy image is not fetched until it is displayed —
+       which would leave a blank panel on the first advance. Once the page has
+       finished loading, promote them so they are ready before they are needed. */
+    const warmSlides = () =>
+      hero
+        .querySelectorAll<HTMLImageElement>('img[loading="lazy"]')
+        .forEach((img) => {
+          img.loading = "eager";
+        });
+
+    if (document.readyState === "complete") warmSlides();
+    else window.addEventListener("load", warmSlides, { once: true });
 
     let index = 0;
     let timer: number | undefined;
